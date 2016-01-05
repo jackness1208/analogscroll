@@ -2,13 +2,13 @@
 
 ## 组件对 UI 的要求：
 * options.scrollbar 为滚动区域对象, 组件要求滚动区域内有且只有 1个 子级元素， 组件会将该子级元素认定为滚动条区域中的滑块
-```
+```html
 <div class="scroll-area">
     <span class="bar"></span>
 </div>
 ```
 * target 为需要添加滚动条的主体内容, 需通过样式设置成 overflow: hidden， 组件才能正常渲染。
-```
+```html
 <div class="main-area" style="overflow: hidden;">
     <div class="text-cnt">
     some text...
@@ -17,7 +17,7 @@
 ```
 
 ## 使用方法
-```
+```javascript
 var iScroll = analogscroll(
     '#list',
     {
@@ -30,7 +30,7 @@ var iScroll = analogscroll(
 );
 ```
 ## 参数说明
-```
+```javascript
 analogscroll(target, options);
 ```
 |参数|类型|是否必须|说明|
@@ -49,7 +49,7 @@ analogscroll(target, options);
 |back|{string/object}|否|控制滚动条向左/上 移动的按钮|
 
 ## 返回对象
-```
+```javascript
 var iScroll = analogscroll(target, options);
 ```
 ### iScroll 参数说明
