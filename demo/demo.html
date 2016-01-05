@@ -1,0 +1,96 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>模拟滚动条</title>
+<style type="text/css">
+*{margin:0; padding:0;}
+.area{ width:620px; margin:50px auto; padding:5px; border:1px solid #e1e1e1; -webkit-box-shadow:0 0 5px #ccc; -moz-box-shadow:0 0 5px #ccc; box-shadow:0 0 5px #ccc; zoom:1;}
+	.area:after{ content:"."; display:block; visibility:hidden; clear:both; height:0; overflow:hidden;}
+
+.imgList{ float:left; display:block; width:600px; height:330px; overflow:hidden;}
+	.imgList img{ vertical-align:top;}
+
+.v-scroll_area{ float:left; display:inline; height:330px; width:15px; margin-left:5px;}
+	.v-topBtn,
+	.v-bottomBtn{ display:block; height:10px; text-indent:-999em; overflow:hidden; background:#eaeaea;}
+	.v-topBtn:hover,
+	.v-bottomBtn:hover{ background:#ccc;}
+
+	.v-scrollbar{ position:relative; height:300px; background:#eaeaea; margin:5px 0;}
+	.v-scrollbar span,
+	.v-scrollbar a{ position:absolute; top:0; left:0; width:15px; height:10px; overflow:hidden; background:#ff9fcc; cursor:pointer; text-indent:-999em;}
+	.v-scrollbar a:hover{ background:#fb0076;}
+
+.n-scroll_area{ float:left; display:inline; height:15px; width:600px; margin-top:5px;}
+	.n-topBtn,
+	.n-bottomBtn{ float:left; display:inline; width:0; height:15px; padding-left:10px; overflow:hidden; background:#eaeaea}
+	.n-topBtn:hover,
+	.n-bottomBtn:hover{ background:#ccc;}
+
+	.n-scrollbar{ position:relative; float:left; height:15px; width:570px; margin:0 5px; background:#eaeaea;}
+	.n-scrollbar span,
+	.n-scrollbar a{ position:absolute; top:0; left:0; width:15px; height:15px; overflow:hidden; background:#ff9fcc; cursor:pointer; text-indent:-999em;}
+	.n-scrollbar a:hover{ background:#fb0076;}
+</style>
+</head>
+
+<body>
+<div class="area">
+	<div class="imgList" id="list">
+		<div style="display:block; width:1200px;">
+			<img id="img" src="http://www.jackness.org/lab/2012/analog_scroll/test/images/temp_img01.jpg" alt=""/>
+		</div>
+	</div>
+	<!-- 垂直滚动条 -->
+	<div class="v-scroll_area">
+		<a id="vTopBtn" href="javascript:;" class="v-topBtn">top</a>
+		<div id="vScrollbar" class="v-scrollbar">
+			<a href="javascript:;">scroll</a>
+		</div>
+		<a id="vBottomBtn" href="javascript:;" class="v-bottomBtn">bottom</a>
+	</div>
+	<!--/垂直滚动条 -->
+	<!-- 水平滚动条 -->
+	<div class="n-scroll_area">
+		<a id="nTopBtn" href="javascript:;" class="n-topBtn">top</a>
+		<div id="nScrollbar" class="n-scrollbar">
+			<a href="javascript:;">scroll</a>
+		</div>
+		<a id="nBottomBtn" href="javascript:;" class="n-bottomBtn">bottom</a>
+	</div>
+	<!--/水平滚动条 -->
+	<div class="scrollArea2" id="scroll_area2"><span></span></div>
+	<div style=" float:left;width:15px; height:15px; margin-top:5px; margin-left:5px; background:#f1f1f1; overflow:hidden;"></div>
+</div>
+<script src="../lib/jquery/jquery-1.11.3.min.js"></script>
+<script src="../js/analogscroll.js"></script>
+<script>
+!function(){
+    var a = analogscroll(
+        '#list',
+        {
+            scrollbar: '#vScrollbar',
+            forward: '#vBottomBtn',
+            back: '#vTopBtn'
+        }
+    );
+    var b = analogscroll(
+        '#list',
+        {
+            direction: 'x',
+            scrollbar: '#nScrollbar',
+            forward: '#nBottomBtn',
+            back: '#nTopBtn'
+        }
+    );
+    $('#img').on('load', function(){
+        a.resize();
+        b.resize();
+    });
+}();
+</script>
+</body>
+</html>
+
