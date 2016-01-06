@@ -226,8 +226,9 @@
                             };
                             el.bar.style[attrs[2]] = myPosition + "px";
                             she.mapping();
-                            fn.preventDefault(e);
                         }, 10);
+                        fn.preventDefault(e);
+                        fn.stopBubble(e);
                         
                     }
                 };
