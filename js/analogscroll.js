@@ -335,7 +335,7 @@
     init.prototype = analogscroll.fn;
 
 
-    if(typeof define != 'undefined' && defined.amd){
+    if(typeof define != 'undefined' && define.amd){
         define([], function(){
             return analogscroll;
         });
