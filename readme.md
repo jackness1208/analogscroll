@@ -58,3 +58,6 @@ var iScroll = analogscroll(target, options);
 |resize|{function}|滚动条区域大小重新计算|
 |back|{function}|控制滚动条向左/上移动|
 |forward|{function}|控制滚动条向右/下移动|
+
+## 例子
+例子在[这里](http://www.jackness.org/lab/2016/analogscroll/demo/demo.html)
