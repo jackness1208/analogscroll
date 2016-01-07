@@ -75,10 +75,12 @@ var iScroll = analogscroll(target, options);
 例子在[这里](http://www.jackness.org/lab/2016/analogscroll/demo/demo.html)
 
 ## 更新记录
-### 1.1.0
+
+### 1.1.0 - 2015-01-08
 * [ADD] op.transition 滚动动画过渡时长
 * [ADD] op.onbegin 当滚动条移动至最左/上 时触发的函数
 * [ADD] op.onend 当滚动条移动至最右/下 时触发的函数
 * [ADD] iScroll.scrollTo(num) 滚动当前内容到指定位置
-### 1.0.0
+
+### 1.0.0 - 2015-01-06
 * [ADD] 诞生
