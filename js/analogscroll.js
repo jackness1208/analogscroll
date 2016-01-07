@@ -10,7 +10,12 @@
             // 向下/右 滚按钮
             forward: undefined,
             // 向上/左 滚按钮
-            back: undefined
+            back: undefined,
+
+            onend: function(){},
+
+            onbegin: function(){}
+
         },
         fn = {
             preventDefault: function(e){
@@ -37,8 +42,63 @@
                         ;
                 }
             },
-            getPosition: function(target){var contentDocument = document; arguments[2]? contentDocument = arguments[2]:""; var _x = target.offsetLeft; var _y = target.offsetTop; if($(target).css("position") == "fixed"){_x += contentDocument.documentElement.scrollLeft||contentDocument.body.scrollLeft; _y += contentDocument.documentElement.scrollTop||contentDocument.body.scrollTop; } while(target = target.offsetParent){_x += target.offsetLeft||0; _y += target.offsetTop||0; } return{left:_x, top:_y } }
-            
+            getPosition: function(target){
+                var contentDocument = document; 
+                arguments[2]
+                    ? contentDocument = arguments[2]
+                    :""; 
+                var _x = target.offsetLeft; 
+                var _y = target.offsetTop; 
+                if($(target).css("position") == "fixed"){
+                    _x += contentDocument.documentElement.scrollLeft || contentDocument.body.scrollLeft; 
+                    _y += contentDocument.documentElement.scrollTop || contentDocument.body.scrollTop; 
+                } 
+                while(target = target.offsetParent){
+                    _x += target.offsetLeft || 0; 
+                    _y += target.offsetTop || 0; 
+                } 
+                return {
+                    left:_x, 
+                    top:_y 
+                } 
+            }
+
+        },
+        // analogscroll 用 私有方法
+        sf = {
+            b2cMapping: function(ctrl){
+                var she = ctrl,
+                    op = she.op,
+                    el = she.el,
+                    setting = she.setting,
+                    attrs = she.attrs;
+
+
+                var nowPostion = parseFloat(el.bar.style[attrs[2]], 10);
+                el.target["scroll" + attrs[3]] = nowPostion / setting.b2eScale;
+            },
+            c2bMapping: function(ctrl){
+                var she = ctrl,
+                    op = she.op,
+                    el = she.el,
+                    setting = she.setting,
+                    attrs = she.attrs;
+
+                var nowPosition = el.target["scroll" + attrs[3]];
+                el.bar.style[attr[2]] = nowPosition * nowPosition + 'px';
+
+            },
+
+            positionFix: function(ctrl){
+                var she = ctrl,
+                    op = she.op,
+                    el = she.el,
+                    setting = she.setting,
+                    attrs = she.attrs;
+
+                // var nowPosition = el.target["scroll" + attrs[3]];
+                // el.bar.style[attr[2]] = nowPosition * nowPosition + 'px';
+            }
         };
 
     var analogscroll = function(target, op){
@@ -55,10 +115,13 @@
         },
 
         setting: {
-            limitHeight: 0,
-            scale: 1
+            scale: 1,
+            contentLimit: 0,
+            contentNow: 0
         },
+
         attrs: [],
+
         resize: function(){
             var she = this,
                 op = she.op,
@@ -89,20 +152,12 @@
             //区域与滚动条之间的比例
             setting.b2eScale = sbOffset / seScroll;
 
+            setting.contentLimit = seScroll;
+
             el.bar.style[attrs[0]] = sbOffset * setting.scale + "px";
             el.bar.style[attrs[2]] = el.target["scroll" + attrs[3]] * setting.b2eScale + "px";
         },
-        mapping: function(){
-            var she = this,
-                op = she.op,
-                el = she.el,
-                setting = she.setting,
-                attrs = she.attrs;
-
-
-            var nowPostion = parseFloat(el.bar.style[attrs[2]], 10);
-			el.target["scroll" + attrs[3]] = nowPostion / setting.b2eScale;
-        },
+        
         back: function(){
             var she = this,
                 op = she.op,
@@ -121,7 +176,7 @@
                 ;
 
             el.bar.style[attrs[2]] = myPosition + "px";
-            she.mapping();
+            sf.b2cMapping(she);
         },
         
         forward: function(){
@@ -143,8 +198,12 @@
                 ;
 
             el.bar.style[attrs[2]] = myPosition + "px";
-            she.mapping();
+            sf.b2cMapping(she);
+        },
+        scrollTo: function(d, done){
+            
         }
+        
     };
 
     var 
@@ -200,7 +259,7 @@
                             ;
 
                         el.bar.style[attrs[2]] = nowPostion + "px";
-                        she.mapping();
+                        sf.b2cMapping(she);
                     },
                     // for window
                     up: function(){
@@ -218,18 +277,16 @@
                                 data = e.wheelDelta || -e.detail;
 
                             data > 0? myPosition -= moveDistance : myPosition += moveDistance;
-                            
                             if(myPosition < 0){ 
                                 myPosition = 0;
                             } else if(myPosition > limitWidth){
                                 myPosition = limitWidth;
                             };
                             el.bar.style[attrs[2]] = myPosition + "px";
-                            she.mapping();
+                            sf.b2cMapping(she);
                         }, 10);
                         fn.preventDefault(e);
                         fn.stopBubble(e);
-                        
                     }
                 };
 
