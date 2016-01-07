@@ -5,12 +5,14 @@
             direction: 'y',
             // 滚动条区域
             scrollbar: undefined,
-            //滚动条滑块一次点击的移动距离
+            // 滚动条滑块一次点击的移动距离
             distance: 20,
             // 向下/右 滚按钮
             forward: undefined,
             // 向上/左 滚按钮
             back: undefined,
+            // 滚动动画过渡
+            transition: 500,
 
             onend: function(){},
 
@@ -61,7 +63,30 @@
                     left:_x, 
                     top:_y 
                 } 
+            },
+
+            inertiaMotion: function(So,St,T){
+                var sArray = [],
+                    S = Math.abs(St - So),
+                    //摆动，惯性运动,利用的是sin 的特性,再用次方 加强幅度
+                    swingHandle = function(){
+                        var S = St - So;
+                        
+                        for(var i = 0, len = T; i < len; i++){
+                            sArray[i] = parseInt(S * Math.pow(Math.sin(i/T*Math.PI/2),3)*100)/100 + So;
+                        }
+
+                    };
+
+                swingHandle();
+
+                return{
+                    Sn:function(Tn){
+                        return Tn > T? St : sArray[Tn];
+                    }
+                };
             }
+            
 
         },
         // analogscroll 用 私有方法
@@ -75,7 +100,10 @@
 
 
                 var nowPostion = parseFloat(el.bar.style[attrs[2]], 10);
-                el.target["scroll" + attrs[3]] = nowPostion / setting.b2eScale;
+                setting.contentNow = Math.ceil(nowPostion / setting.b2eScale);
+                el.target["scroll" + attrs[3]] = setting.contentNow;
+
+                sf.positionCheck(she);
             },
             c2bMapping: function(ctrl){
                 var she = ctrl,
@@ -84,17 +112,40 @@
                     setting = she.setting,
                     attrs = she.attrs;
 
-                var nowPosition = el.target["scroll" + attrs[3]];
-                el.bar.style[attr[2]] = nowPosition * nowPosition + 'px';
+                var nowPosition = setting.contentNow = el.target["scroll" + attrs[3]];
+                el.bar.style[attrs[2]] = nowPosition * setting.b2eScale + 'px';
 
+                sf.positionCheck(she);
             },
 
-            positionFix: function(ctrl){
+            positionCheck: function(ctrl){
                 var she = ctrl,
                     op = she.op,
                     el = she.el,
                     setting = she.setting,
                     attrs = she.attrs;
+
+
+                if(setting.contentNow >= setting.contentLimit){
+                    if(!setting.endedAready){
+                        op.onend && op.onend();
+
+                        setting.endedAready = true;
+                        setting.beginAready = false;
+                    }
+                    
+                } else if(setting.contentNow == 0){
+                    if(!setting.beginAready){
+                        op.onbegin && op.onbegin();
+
+                        setting.endedAready = false;
+                        setting.beginAready = true;
+                    }
+
+                } else {
+                    setting.endedAready = false;
+                    setting.beginAready = false;
+                }
 
                 // var nowPosition = el.target["scroll" + attrs[3]];
                 // el.bar.style[attr[2]] = nowPosition * nowPosition + 'px';
@@ -105,20 +156,8 @@
         return new analogscroll.fn.init(target, op);
     };
 
-    analogscroll.fn = analogscroll.prototype = {
+    analogscroll.fn = {
         op: {},
-
-        el: {
-            target: undefined,
-            scrollbar: undefined,
-            bar: undefined
-        },
-
-        setting: {
-            scale: 1,
-            contentLimit: 0,
-            contentNow: 0
-        },
 
         attrs: [],
 
@@ -152,10 +191,11 @@
             //区域与滚动条之间的比例
             setting.b2eScale = sbOffset / seScroll;
 
-            setting.contentLimit = seScroll;
+            setting.contentLimit = seScroll - seOffset;
+            setting.contentNow = el.target["scroll" + attrs[3]] * setting.b2eScale;
 
             el.bar.style[attrs[0]] = sbOffset * setting.scale + "px";
-            el.bar.style[attrs[2]] = el.target["scroll" + attrs[3]] * setting.b2eScale + "px";
+            el.bar.style[attrs[2]] = setting.contentNow + "px";
         },
         
         back: function(){
@@ -201,7 +241,43 @@
             sf.b2cMapping(she);
         },
         scrollTo: function(d, done){
+            var she = this,
+                op = she.op,
+                el = she.el,
+                setting = she.setting,
+                attrs = she.attrs;
+
+            d < 0 && (d = 0);
+            d > setting.contentLimit && (d = setting.contentLimit);
             
+            var 
+                interval = 20,
+                T = op.transition / interval,
+                Tn = 0,
+                So = el.target['scroll' + attrs[3]],
+                Sn = So,
+                St = parseInt(d, 10),
+                acc = fn.inertiaMotion(So, St, T);
+
+
+            clearTimeout(setting.scrollToKey);
+            !function doit(){
+                if(Tn < T){
+                    setting.isAni = true;
+                    Sn = acc.Sn(Tn);
+                    el.target['scroll' + attrs[3]] = Sn;
+                    sf.c2bMapping(she);
+
+                    Tn++;
+                    setting.scrollToKey = setTimeout(doit, interval);
+
+                } else {
+                    setting.isAni = false;
+                    el.target['scroll' + attrs[3]] = St;
+                    sf.c2bMapping(she);
+                    done && done();
+                }
+            }();
         }
         
     };
@@ -211,7 +287,13 @@
             var 
                 she = this,
                 op = she.op = $.fn.extend(undefined, options, op),
-                setting = she.setting,
+
+                setting = she.setting = {
+                    scale: 1,
+                    contentLimit: 0,
+                    contentNow: 0
+                },
+                
                 el = she.el = {
                     target: $(target)[0],
                     scrollbar: $(she.op.scrollbar)[0],
@@ -234,6 +316,11 @@
                         e = e || window.event;
                         fn.preventDefault(e);
                         fn.stopBubble(e);
+                        
+                        if(setting.isAni){
+                            return;
+                        }
+
                         setting.posX = e.clientX - this.offsetLeft;
                         setting.posY = e.clientY - this.offsetTop;
 
@@ -248,6 +335,9 @@
                         e = e || window.event;
             
                         fn.preventDefault(e);
+                        if(setting.isAni){
+                            return;
+                        }
                         var nowPostion = e["client" + attrs[4]] - setting["pos" + attrs[4]],
                             scale = 0;
 
@@ -271,6 +361,9 @@
                     wheel: function(e){
                         e = window.event;
                         setting.wheelKey = setTimeout(function(){
+                            if(setting.isAni){
+                                return;
+                            }
                             var myPosition = parseFloat(el.bar.style[attrs[2]], 10),
                                 limitWidth = el.scrollbar["offset" + attrs[1]] - el.bar["offset" + attrs[1]],
                                 moveDistance = op.distance,

@@ -39,7 +39,7 @@
 <body>
 <div class="area">
 	<div class="imgList" id="list">
-		<div style="display:block; width:1200px;">
+		<div style="display:block; width:1200px; height: 1600px;">
 			<img id="img" src="http://www.jackness.org/lab/2012/analog_scroll/test/images/temp_img01.jpg" alt=""/>
 		</div>
 	</div>
@@ -73,7 +73,15 @@
         {
             scrollbar: '#vScrollbar',
             forward: '#vBottomBtn',
-            back: '#vTopBtn'
+            back: '#vTopBtn',
+            transition: 500,
+            onbegin: function(){
+                console.log('at bar top');
+            },
+            onend: function(){
+                console.log('at bar foot');
+
+            }
         }
     );
     var b = analogscroll(
@@ -86,8 +94,8 @@
         }
     );
     $('#img').on('load', function(){
-        a.resize();
-        b.resize();
+        
+        a.scrollTo(2000);
     });
 }();
 </script>

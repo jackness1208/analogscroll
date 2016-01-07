@@ -25,7 +25,15 @@ var iScroll = analogscroll(
         distance: 20,
         scrollbar: '#vScrollbar',
         forward: '#vBottomBtn',
-        back: '#vTopBtn'
+        back: '#vTopBtn',
+        transition: 500,
+        onbegin: function(){
+            console.log('at bar top');
+        },
+        onend: function(){
+            console.log('at bar foot');
+
+        }
     }
 );
 ```
@@ -46,7 +54,10 @@ analogscroll(target, options);
 |direction|{string}|否|滚动条方向。x 或者 y。默认值为 y|
 |distance|{number}|否|鼠标滚轮每滚一下滑移动的距离。默认值为 20|
 |forward|{string/object}|否|控制滚动条向右/下 移动的按钮|
+|transition|{number}|否|滚动动画过渡时长，默认值为 500 ms|
 |back|{string/object}|否|控制滚动条向左/上 移动的按钮|
+|onbegin|{function}|否|当滚动条移动至最左/上 时触发的函数|
+|onend|{function}|否|当滚动条移动至最右/下 时触发的函数|
 
 ## 返回对象
 ```javascript
@@ -55,9 +66,19 @@ var iScroll = analogscroll(target, options);
 ### iScroll 参数说明
 |参数|类型|说明|
 |----|----|----|
-|resize|{function}|滚动条区域大小重新计算|
-|back|{function}|控制滚动条向左/上移动|
-|forward|{function}|控制滚动条向右/下移动|
+|resize()|{function}|滚动条区域大小重新计算|
+|back()|{function}|控制滚动条向左/上移动|
+|forward()|{function}|控制滚动条向右/下移动|
+|scrollTo(num)|{function}|滚动当前内容到指定位置， 单位为 px|
 
 ## 例子
 例子在[这里](http://www.jackness.org/lab/2016/analogscroll/demo/demo.html)
+
+## 更新记录
+### 1.1.0
+* [ADD] op.transition 滚动动画过渡时长
+* [ADD] op.onbegin 当滚动条移动至最左/上 时触发的函数
+* [ADD] op.onend 当滚动条移动至最右/下 时触发的函数
+* [ADD] iScroll.scrollTo(num) 滚动当前内容到指定位置
+### 1.0.0
+* [ADD] 诞生
