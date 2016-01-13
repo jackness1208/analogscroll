@@ -360,24 +360,27 @@
                     // content
                     wheel: function(e){
                         e = window.event;
+
+                        var myPosition = parseFloat(el.bar.style[attrs[2]], 10),
+                            limitWidth = el.scrollbar["offset" + attrs[1]] - el.bar["offset" + attrs[1]],
+                            moveDistance = op.distance,
+                            data = e.wheelDelta || -e.detail;
+
+                        data > 0? myPosition -= moveDistance : myPosition += moveDistance;
+                        if(myPosition < 0){ 
+                            myPosition = 0;
+                        } else if(myPosition > limitWidth){
+                            myPosition = limitWidth;
+                        }
+
                         setting.wheelKey = setTimeout(function(){
                             if(setting.isAni){
                                 return;
                             }
-                            var myPosition = parseFloat(el.bar.style[attrs[2]], 10),
-                                limitWidth = el.scrollbar["offset" + attrs[1]] - el.bar["offset" + attrs[1]],
-                                moveDistance = op.distance,
-                                data = e.wheelDelta || -e.detail;
-
-                            data > 0? myPosition -= moveDistance : myPosition += moveDistance;
-                            if(myPosition < 0){ 
-                                myPosition = 0;
-                            } else if(myPosition > limitWidth){
-                                myPosition = limitWidth;
-                            };
                             el.bar.style[attrs[2]] = myPosition + "px";
                             sf.b2cMapping(she);
                         }, 10);
+
                         fn.preventDefault(e);
                         fn.stopBubble(e);
                     }
