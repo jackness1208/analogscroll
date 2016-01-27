@@ -14,9 +14,14 @@
             // 滚动动画过渡
             transition: 500,
 
+            // 距离 底部多少像素时开始触发 onend
+            endDistance: 20,
+
             onend: function(){},
 
-            onbegin: function(){}
+            onbegin: function(){},
+
+            onscroll: function(){}
 
         },
         fn = {
@@ -126,26 +131,14 @@
                     attrs = she.attrs;
 
 
-                if(setting.contentNow >= setting.contentLimit){
-                    if(!setting.endedAready){
+                if(setting.contentNow + op.endDistance >= setting.contentLimit){
                         op.onend && op.onend();
-
-                        setting.endedAready = true;
-                        setting.beginAready = false;
-                    }
                     
                 } else if(setting.contentNow == 0){
-                    if(!setting.beginAready){
                         op.onbegin && op.onbegin();
-
-                        setting.endedAready = false;
-                        setting.beginAready = true;
-                    }
-
-                } else {
-                    setting.endedAready = false;
-                    setting.beginAready = false;
                 }
+
+                op.onscroll && op.onscroll(setting.contentNow);
 
                 // var nowPosition = el.target["scroll" + attrs[3]];
                 // el.bar.style[attr[2]] = nowPosition * nowPosition + 'px';
@@ -196,6 +189,7 @@
 
             el.bar.style[attrs[0]] = sbOffset * setting.scale + "px";
             el.bar.style[attrs[2]] = setting.contentNow + "px";
+            op.onscroll && op.onscroll(setting.contentNow);
         },
         
         back: function(){

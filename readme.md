@@ -58,6 +58,8 @@ analogscroll(target, options);
 |back|{string/object}|否|控制滚动条向左/上 移动的按钮|
 |onbegin|{function}|否|当滚动条移动至最左/上 时触发的函数|
 |onend|{function}|否|当滚动条移动至最右/下 时触发的函数|
+|onscroll|{function}|否|当滚动条时触发的函数|
+|endDistance|{Number}|否|设定 触发 onend 事件时距离 内容底部的距离, 默认为 0|
 
 ## 返回对象
 ```javascript
@@ -75,6 +77,11 @@ var iScroll = analogscroll(target, options);
 例子在[这里](http://www.jackness.org/lab/2016/analogscroll/demo/demo.html)
 
 ## 更新记录
+
+### 1.2.0 - 2015-01-27
+* [ADD]  op.onscroll    设置滚动条时触发的函数
+* [ADD]  op.endDistance 设定 触发 onend 事件时距离 内容底部的距离
+* [EDIT] op.onend       调整函数触发条件为 每次触发 onscroll 事件时， 达到内容底部or 设定的 endDistance 距离即触发
 
 ### 1.1.0 - 2015-01-08
 * [ADD] op.transition 滚动动画过渡时长
