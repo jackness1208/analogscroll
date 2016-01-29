@@ -353,7 +353,7 @@
                     },
                     // content
                     wheel: function(e){
-                        e = window.event;
+                        e = window.event || e;
 
                         var myPosition = parseFloat(el.bar.style[attrs[2]], 10),
                             limitWidth = el.scrollbar["offset" + attrs[1]] - el.bar["offset" + attrs[1]],

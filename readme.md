@@ -78,6 +78,9 @@ var iScroll = analogscroll(target, options);
 
 ## 更新记录
 
+### 1.2.1 - 2015-01-29
+* [FIX] 修复 firefox 下鼠标滚动内容区域没响应问题
+
 ### 1.2.0 - 2015-01-27
 * [ADD]  op.onscroll    设置滚动条时触发的函数
 * [ADD]  op.endDistance 设定 触发 onend 事件时距离 内容底部的距离
