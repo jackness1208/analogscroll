@@ -78,6 +78,9 @@ var iScroll = analogscroll(target, options);
 
 ## 更新记录
 
+### 1.2.2 - 2015-01-29
+* [FIX] 修复 触发 iScroll.resize() 时， op.onscroll(scrollTop) scrollTop 数值不对问题
+
 ### 1.2.1 - 2015-01-29
 * [FIX] 修复 firefox 下鼠标滚动内容区域没响应问题
 

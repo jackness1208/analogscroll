@@ -1,3 +1,10 @@
+/**
+ * Copyright 2016, jackness.org
+ * Creator: Jackness Lau
+ * $Author: Jackness Lau $
+ * $Date: 2016.02.05 $
+ * $Version: 1.2.2 $
+ */
 !function($, window, document, undefined){
     var
         options = {
@@ -131,6 +138,8 @@
                     attrs = she.attrs;
 
 
+                op.onscroll && op.onscroll(setting.contentNow);
+
                 if(setting.contentNow + op.endDistance >= setting.contentLimit){
                         op.onend && op.onend();
                     
@@ -138,7 +147,7 @@
                         op.onbegin && op.onbegin();
                 }
 
-                op.onscroll && op.onscroll(setting.contentNow);
+                
 
                 // var nowPosition = el.target["scroll" + attrs[3]];
                 // el.bar.style[attr[2]] = nowPosition * nowPosition + 'px';
@@ -189,7 +198,8 @@
 
             el.bar.style[attrs[0]] = sbOffset * setting.scale + "px";
             el.bar.style[attrs[2]] = setting.contentNow + "px";
-            op.onscroll && op.onscroll(setting.contentNow);
+
+            op.onscroll && op.onscroll(el.target['scroll' + attrs[3]]);
         },
         
         back: function(){
