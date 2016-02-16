@@ -78,6 +78,9 @@ var iScroll = analogscroll(target, options);
 
 ## 更新记录
 
+### 1.2.3 - 2015-02-16
+* [FIX] 修复 在滚动条区域滚动鼠标时，会触发页面滚动问题
+
 ### 1.2.2 - 2015-01-29
 * [FIX] 修复 触发 iScroll.resize() 时， op.onscroll(scrollTop) scrollTop 数值不对问题
 

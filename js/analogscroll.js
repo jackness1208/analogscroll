@@ -396,9 +396,11 @@
                 attrs = she.attrs = ["height","Height","top","Top","Y"];
                 if("onmousewheel" in el.target){
                     $(el.target).bind('mousewheel', mouseEvt.wheel);
+                    $(el.scrollbar).bind('mousewheel', mouseEvt.wheel);
 
                 } else {
                     $(el.target).bind('DOMMouseScroll', mouseEvt.wheel);
+                    $(el.scrollbar).bind('DOMMouseScroll', mouseEvt.wheel);
 
                 }
             };
