@@ -363,12 +363,16 @@
                     },
                     // content
                     wheel: function(e){
-                        e = window.event || e;
 
                         var myPosition = parseFloat(el.bar.style[attrs[2]], 10),
                             limitWidth = el.scrollbar["offset" + attrs[1]] - el.bar["offset" + attrs[1]],
                             moveDistance = op.distance,
-                            data = e.wheelDelta || -e.detail;
+                            data = e.originalEvent['wheelDelta' + attrs[4]] 
+                                    || -e.originalEvent['delta' + attrs[4]] 
+                                    || e.originalEvent['wheelDelta']
+                                    || -e.originalEvent['delta'];
+
+                        document.title = data;
 
                         data > 0? myPosition -= moveDistance : myPosition += moveDistance;
                         if(myPosition < 0){ 
