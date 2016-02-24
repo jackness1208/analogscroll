@@ -372,8 +372,6 @@
                                     || e.originalEvent['wheelDelta']
                                     || -e.originalEvent['delta'];
 
-                        document.title = data;
-
                         data > 0? myPosition -= moveDistance : myPosition += moveDistance;
                         if(myPosition < 0){ 
                             myPosition = 0;
