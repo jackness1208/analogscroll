@@ -60,6 +60,7 @@ analogscroll(target, options);
 |onend|{function}|否|当滚动条移动至最右/下 时触发的函数|
 |onscroll|{function}|否|当滚动条时触发的函数|
 |endDistance|{Number}|否|设定 触发 onend 事件时距离 内容底部的距离, 默认为 0|
+|onresize|{function}|否|设定 组件每次初始化 滚动条高度时回调函数|
 
 ## 返回对象
 ```javascript
@@ -77,6 +78,9 @@ var iScroll = analogscroll(target, options);
 例子在[这里](http://www.jackness.org/lab/2016/analogscroll/demo/demo.html)
 
 ## 更新记录
+
+### 1.3.0
+* [ADD] 新增 op.onresize 事件，用于在组件每次初始化 滚动条高度的时候触发
 
 ### 1.2.4 - 2015-02-24
 * [FIX] 修复 在ie11下滚动条区域滚动鼠标，滚动存在问题问题

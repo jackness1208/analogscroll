@@ -28,7 +28,10 @@
 
             onbegin: function(){},
 
-            onscroll: function(){}
+            onscroll: function(){},
+
+
+            onresize: function(){}
 
         },
         fn = {
@@ -200,6 +203,7 @@
             el.bar.style[attrs[2]] = setting.contentNow + "px";
 
             op.onscroll && op.onscroll(el.target['scroll' + attrs[3]]);
+            op.onresize && op.onresize(setting.b2eScale);
         },
         
         back: function(){
