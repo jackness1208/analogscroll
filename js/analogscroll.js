@@ -2,10 +2,11 @@
  * Copyright 2016, jackness.org
  * Creator: Jackness Lau
  * $Author: Jackness Lau $
- * $Date: 2016.02.05 $
- * $Version: 1.2.2 $
+ * $Date: 2016.04.05 $
+ * $Version: 1.3.1 $
  */
-!function($, window, document, undefined){
+'use strict';
+(function($, window, document, undefined){
     var
         options = {
             // 方向 x|y
@@ -37,12 +38,16 @@
         fn = {
             preventDefault: function(e){
                 e = e || window.event; 
-                e.preventDefault && e.preventDefault();
+                if(e.preventDefault){
+                    e.preventDefault();
+                }
                 e.returnValue = false;
             },
             stopBubble: function(e){
                 e = e || window.event; 
-                e.stopPropagation && e.stopPropagation();
+                if(e.stopPropagation){
+                    e.stopPropagation();
+                }
                 e.cancelBubble = true;
             },
             selection: {
@@ -52,37 +57,41 @@
                 disable: function(){
                     document.onselectstart = function(){
                         return false;
+                    };
+                    if(window.getSelection){
+                        window.getSelection().removeAllRanges();
+                        
+                    } else {
+                        document.selection.empty();
                     }
-                    window.getSelection
-                        ? window.getSelection().removeAllRanges()
-                        : document.selection.empty()
-                        ;
                 }
             },
             getPosition: function(target){
                 var contentDocument = document; 
-                arguments[2]
-                    ? contentDocument = arguments[2]
-                    :""; 
+                if(arguments[2]){
+                    contentDocument = arguments[2];
+                }
+                
                 var _x = target.offsetLeft; 
                 var _y = target.offsetTop; 
                 if($(target).css("position") == "fixed"){
                     _x += contentDocument.documentElement.scrollLeft || contentDocument.body.scrollLeft; 
                     _y += contentDocument.documentElement.scrollTop || contentDocument.body.scrollTop; 
                 } 
-                while(target = target.offsetParent){
+                target = target.offsetParent;
+                while(target){
                     _x += target.offsetLeft || 0; 
                     _y += target.offsetTop || 0; 
+                    target = target.offsetParent;
                 } 
                 return {
                     left:_x, 
                     top:_y 
-                } 
+                };
             },
 
             inertiaMotion: function(So,St,T){
                 var sArray = [],
-                    S = Math.abs(St - So),
                     //摆动，惯性运动,利用的是sin 的特性,再用次方 加强幅度
                     swingHandle = function(){
                         var S = St - So;
@@ -108,7 +117,6 @@
         sf = {
             b2cMapping: function(ctrl){
                 var she = ctrl,
-                    op = she.op,
                     el = she.el,
                     setting = she.setting,
                     attrs = she.attrs;
@@ -122,7 +130,6 @@
             },
             c2bMapping: function(ctrl){
                 var she = ctrl,
-                    op = she.op,
                     el = she.el,
                     setting = she.setting,
                     attrs = she.attrs;
@@ -136,18 +143,22 @@
             positionCheck: function(ctrl){
                 var she = ctrl,
                     op = she.op,
-                    el = she.el,
-                    setting = she.setting,
-                    attrs = she.attrs;
+                    setting = she.setting;
 
 
-                op.onscroll && op.onscroll(setting.contentNow);
+                if(op.onscroll){
+                    op.onscroll(setting.contentNow);
+                }
 
                 if(setting.contentNow + op.endDistance >= setting.contentLimit){
-                        op.onend && op.onend();
+                    if(op.onend){
+                        op.onend();
+                    }
                     
-                } else if(setting.contentNow == 0){
-                        op.onbegin && op.onbegin();
+                } else if(setting.contentNow === 0){
+                    if(op.onbegin){
+                        op.onbegin();
+                    }
                 }
 
                 
@@ -178,7 +189,7 @@
 
             } else {
                 attrs = ["height","Height","top","Top"];
-            };
+            }
 
             var seOffset = el.target["offset" + attrs[1]],
                 seScroll = el.target["scroll" + attrs[1]],
@@ -187,11 +198,11 @@
             //可视区域与区域总长之间的比例
             setting.scale = 0;
 
-            seOffset >= seScroll
-                ? setting.scale = 1 
-                : setting.scale = seOffset / seScroll
-                ;
-
+            if(seOffset >= seScroll){
+                setting.scale = 1;
+            } else {
+                setting.scale = seOffset / seScroll;
+            }
 
             //区域与滚动条之间的比例
             setting.b2eScale = sbOffset / seScroll;
@@ -202,15 +213,18 @@
             el.bar.style[attrs[0]] = sbOffset * setting.scale + "px";
             el.bar.style[attrs[2]] = setting.contentNow + "px";
 
-            op.onscroll && op.onscroll(el.target['scroll' + attrs[3]]);
-            op.onresize && op.onresize(setting.b2eScale);
+            if(op.onscroll){
+                op.onscroll(el.target['scroll' + attrs[3]]);
+            }
+            if(op.onresize){
+                op.onresize(setting.b2eScale);
+            }
         },
         
         back: function(){
             var she = this,
                 op = she.op,
                 el = she.el,
-                setting = she.setting,
                 attrs = she.attrs;
 
             var nowPosition = parseFloat(el.bar.style[attrs[2]], 10),
@@ -218,10 +232,11 @@
                 moveDistance = op.distance;
 
 
-            nowPosition - moveDistance > 0
-                ? myPosition =  nowPosition - moveDistance
-                : myPosition = 0
-                ;
+            if(nowPosition - moveDistance > 0){
+                myPosition =  nowPosition - moveDistance;
+            } else {
+                myPosition = 0;
+            }
 
             el.bar.style[attrs[2]] = myPosition + "px";
             sf.b2cMapping(she);
@@ -231,7 +246,6 @@
             var she = this,
                 op = she.op,
                 el = she.el,
-                setting = she.setting,
                 attrs = she.attrs;
 
             var nowPosition = parseFloat(el.bar.style[attrs[2]]),
@@ -240,10 +254,11 @@
                 scrollWidth = el.scrollbar["offset" + attrs[1]] - el.bar["offset" + attrs[1]];
 
 
-            nowPosition + moveDistance < scrollWidth
-                ? myPosition = nowPosition + moveDistance
-                : myPosition = scrollWidth
-                ;
+            if(nowPosition + moveDistance < scrollWidth){
+                myPosition = nowPosition + moveDistance;
+            } else {
+                myPosition = scrollWidth;
+            }
 
             el.bar.style[attrs[2]] = myPosition + "px";
             sf.b2cMapping(she);
@@ -255,8 +270,12 @@
                 setting = she.setting,
                 attrs = she.attrs;
 
-            d < 0 && (d = 0);
-            d > setting.contentLimit && (d = setting.contentLimit);
+            if(d < 0){
+                d = 0;
+            }
+            if(d > setting.contentLimit){
+                d = setting.contentLimit;
+            }
             
             var 
                 interval = 20,
@@ -269,7 +288,7 @@
 
 
             clearTimeout(setting.scrollToKey);
-            !function doit(){
+            (function doit(){
                 if(Tn < T){
                     setting.isAni = true;
                     Sn = acc.Sn(Tn);
@@ -283,18 +302,20 @@
                     setting.isAni = false;
                     el.target['scroll' + attrs[3]] = St;
                     sf.c2bMapping(she);
-                    done && done();
+                    if(done){
+                        done();
+                    }
                 }
-            }();
+            })();
         }
         
     };
 
     var 
-        init = analogscroll.fn.init = function(target, op){
+        init = analogscroll.fn.init = function(target, o){
             var 
                 she = this,
-                op = she.op = $.fn.extend(undefined, options, op),
+                op = she.op = $.fn.extend(undefined, options, o),
 
                 setting = she.setting = {
                     scale: 1,
@@ -337,6 +358,8 @@
 
                         $(document).bind('mousemove', mouseEvt.move);
                         $(document).bind('mouseup', mouseEvt.up);
+                        $(window).bind('losecapture', mouseEvt.up);
+                        $(window).bind('blur', mouseEvt.up);
                     },
                     // for window
                     move: function(e){
@@ -346,15 +369,15 @@
                         if(setting.isAni){
                             return;
                         }
-                        var nowPostion = e["client" + attrs[4]] - setting["pos" + attrs[4]],
-                            scale = 0;
+                        var nowPostion = e["client" + attrs[4]] - setting["pos" + attrs[4]];
 
-                        nowPostion < 0? nowPostion = 0:"";
+                        if(nowPostion < 0){
+                            nowPostion = 0;
+                        }
 
-                        nowPostion > (el.scrollbar["offset" + attrs[1]] - el.bar["offset" + attrs[1]])
-                            ? nowPostion = (el.scrollbar["offset" + attrs[1]] - el.bar["offset" + attrs[1]])
-                            : ""
-                            ;
+                        if(nowPostion > (el.scrollbar["offset" + attrs[1]] - el.bar["offset" + attrs[1]])){
+                            nowPostion = (el.scrollbar["offset" + attrs[1]] - el.bar["offset" + attrs[1]]);
+                        }
 
                         el.bar.style[attrs[2]] = nowPostion + "px";
                         sf.b2cMapping(she);
@@ -364,6 +387,8 @@
                         fn.selection.enable();
                         $(document).unbind('mousemove', mouseEvt.move);
                         $(document).unbind('mouseup', mouseEvt.up);
+                        $(window).unbind('losecapture', mouseEvt.up);
+                        $(window).unbind('blur', mouseEvt.up);
                     },
                     // content
                     wheel: function(e){
@@ -373,10 +398,14 @@
                             moveDistance = op.distance,
                             data = e.originalEvent['wheelDelta' + attrs[4]] 
                                     || -e.originalEvent['delta' + attrs[4]] 
-                                    || e.originalEvent['wheelDelta']
-                                    || -e.originalEvent['delta'];
+                                    || e.originalEvent.wheelDelta
+                                    || -e.originalEvent.delta;
 
-                        data > 0? myPosition -= moveDistance : myPosition += moveDistance;
+                        if(data > 0){
+                            myPosition -= moveDistance;
+                        } else {
+                            myPosition += moveDistance;
+                        }
                         if(myPosition < 0){ 
                             myPosition = 0;
                         } else if(myPosition > limitWidth){
@@ -409,7 +438,7 @@
                     $(el.scrollbar).bind('DOMMouseScroll', mouseEvt.wheel);
 
                 }
-            };
+            }
 
             //滚动条滑块初始化
             el.bar.style[attrs[2]] = 0;
@@ -426,20 +455,19 @@
                 setting.posY = e.clientY - self.offsetTop;
 
 
-                $(document).bind("mouseup", function up(e){
+                $(document).bind("mouseup", function up(){
                     clearTimeout(setting.downKey);
                     fn.selection.enable();
                     $(document).unbind('mouseup', up);
                 });
 
-                var distance = op.distance;
-                barWidth = el.bar["offset" + attrs[1]];
+                var 
+                    barWidth = el.bar["offset" + attrs[1]];
 
-                var myPosition;
                 setting.mousePosition = e["client" + attrs[4]] + (document.documentElement["scroll" + attrs[3]] || document.body["scroll" + attrs[3]]) - fn.getPosition(this)[attrs[2]];
 
 
-                !function move(){
+                (function move(){
                     clearTimeout(setting.downKey);
 
                     var barPosition = parseFloat(el.bar.style[attrs[2]], 10),
@@ -454,10 +482,10 @@
                     } else {
                         return;
 
-                    };
+                    }
 
                     setting.downKey = setTimeout( move, 50);
-                }();
+                })();
             });
 
             $(el.bar).bind('mousedown', mouseEvt.down);
@@ -472,10 +500,10 @@
                     $(document).unbind('mouseup',up);
                 });
 
-                !function move(){
+                (function move(){
                     she.forward();
                     setting.downKey = setTimeout(move,50);
-                }();
+                })();
             });
 
             $(el.back).bind('mousedown', function(e){
@@ -488,10 +516,10 @@
                     $(document).unbind('mouseup',up);
                 });
 
-                !function move(){
+                (function move(){
                     she.back();
                     setting.downKey = setTimeout(move,50);
-                }();
+                })();
             });
 
             return this;
@@ -508,4 +536,4 @@
     } else {
         window.analogscroll = analogscroll;
     }
-}(jQuery, window, document);
+})($, window, document);
