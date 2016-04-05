@@ -79,6 +79,11 @@ var iScroll = analogscroll(target, options);
 
 ## 更新记录
 
+
+### 1.3.1
+* [EDIT] 调整代码
+* [FIX] 修复 在 ie 浏览器 被 windows 组件遮挡时 无法出发 mouseup 事件 问题
+
 ### 1.3.0
 * [ADD] 新增 op.onresize 事件，用于在组件每次初始化 滚动条高度的时候触发
 
