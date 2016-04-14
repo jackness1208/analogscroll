@@ -324,6 +324,11 @@
                 } else {
                     setting.isAni = false;
                     el.target['scroll' + attrs[3]] = St;
+
+                    if(el.target['scroll' + attrs[3]] != St){
+                        setting.contentLimit = el.target['scroll' + attrs[3]];
+                    }
+
                     sf.c2bMapping(she);
                     if(done){
                         done();
