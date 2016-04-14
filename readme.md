@@ -80,6 +80,10 @@ var iScroll = analogscroll(target, options);
 ## 更新记录
 
 
+### 1.3.2 - 2016-04-14
+* [FIX] 修复 每次滚动鼠标滚轮 内容滚动距离 不等于 op.distance 问题
+* [FIX] 当没有设置 op.onend op.onbegin 时 滚动条滚到最初| 最底之后 应触发执行父级的滚动
+
 ### 1.3.1 - 2016-04-05
 * [EDIT] 调整代码
 * [FIX] 修复 在 ie 浏览器 被 windows 组件遮挡时 无法出发 mouseup 事件 问题
