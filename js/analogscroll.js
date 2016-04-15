@@ -115,25 +115,32 @@
         // analogscroll 用 私有方法
         sf = {
             b2cMapping: function(ctrl){
-                var she = ctrl,
+                var 
+                    she = ctrl,
                     el = she.el,
                     setting = she.setting,
-                    attrs = she.attrs;
+                    attrs = she.attrs,
+
+                    contentPrep = el.target["scroll" + attrs[3]],
+                    nowPostion = parseFloat(el.bar.style[attrs[2]], 10);
 
 
-                var nowPostion = parseFloat(el.bar.style[attrs[2]], 10);
                 setting.contentNow = Math.ceil(nowPostion / setting.b2eScale);
+
+                setting.direction = setting.contentNow - contentPrep;
+
                 el.target["scroll" + attrs[3]] = setting.contentNow;
 
                 sf.positionCheck(she);
             },
             c2bMapping: function(ctrl){
-                var she = ctrl,
+                var 
+                    she = ctrl,
                     el = she.el,
                     setting = she.setting,
-                    attrs = she.attrs;
+                    attrs = she.attrs,
+                    nowPosition = setting.contentNow = el.target["scroll" + attrs[3]];
 
-                var nowPosition = setting.contentNow = el.target["scroll" + attrs[3]];
                 el.bar.style[attrs[2]] = nowPosition * setting.b2eScale + 'px';
 
                 sf.positionCheck(she);
@@ -148,7 +155,7 @@
 
 
                 if(op.onscroll){
-                    op.onscroll(setting.contentNow);
+                    op.onscroll(setting.contentNow, setting.direction);
                 }
 
                 if(setting.contentNow + op.endDistance >= setting.contentLimit){
@@ -219,13 +226,13 @@
             setting.b2eScale = sbOffset / seScroll;
 
             setting.contentLimit = seScroll - seOffset;
-            setting.contentNow = el.target["scroll" + attrs[3]] * setting.b2eScale;
+            setting.contentNow = el.target["scroll" + attrs[3]];
 
             el.bar.style[attrs[0]] = sbOffset * setting.scale + "px";
-            el.bar.style[attrs[2]] = setting.contentNow + "px";
+            el.bar.style[attrs[2]] = setting.contentNow * setting.b2eScale + "px";
 
             if(op.onscroll){
-                op.onscroll(el.target['scroll' + attrs[3]]);
+                op.onscroll( setting.contentNow, setting.direction);
             }
             if(op.onresize){
                 op.onresize(setting.b2eScale);
@@ -310,12 +317,16 @@
             }
 
 
+
             clearTimeout(setting.scrollToKey);
             (function doit(){
                 if(Tn < T){
                     setting.isAni = true;
                     Sn = acc.Sn(Tn);
                     el.target['scroll' + attrs[3]] = Sn;
+
+                    setting.direction = Sn - So;
+
                     sf.c2bMapping(she);
 
                     Tn++;
@@ -328,6 +339,8 @@
                     if(el.target['scroll' + attrs[3]] != St){
                         setting.contentLimit = el.target['scroll' + attrs[3]];
                     }
+
+                    setting.direction = St - So;
 
                     sf.c2bMapping(she);
                     if(done){
@@ -347,10 +360,20 @@
 
                 setting = she.setting = {
                     scale: 1,
+                    // 内容区域 上限
                     contentLimit: 0,
+                    // 内容区域 位置
                     contentNow: 0,
+                    // 滚动条区域 上限
+                    barLimit: 0,
+                    // 滚动条区域 位置
+                    barNow: 0,
+                    // 是否处于开始位置
                     isBegin: true,
-                    isEnd: false
+                    // 是否处于结束位置
+                    isEnd: false,
+                    // 当前滚动方向（距离）
+                    direction: 0
                 },
                 
                 el = she.el = {
@@ -429,6 +452,7 @@
                                     e.originalEvent.wheelDelta || 
                                     -e.originalEvent.delta;
 
+                        clearTimeout(setting.wheelKey);
                         setting.wheelKey = setTimeout(function(){
                             if(setting.isAni){
                                 return;
