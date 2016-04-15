@@ -58,7 +58,7 @@ analogscroll(target, options);
 |back|{string/object}|否|控制滚动条向左/上 移动的按钮|
 |onbegin|{function}|否|当滚动条移动至最左/上 时触发的函数|
 |onend|{function}|否|当滚动条移动至最右/下 时触发的函数|
-|onscroll|{function}|否|当滚动条时触发的函数|
+|onscroll(scrollTop, direction)|{function}|否|当滚动条时触发的函数, scrollTop 为 当前滚动内容 scrollTop, direction 为滚动方向, 正数为 向右、下方向, 负数为向左、上方向|
 |endDistance|{Number}|否|设定 触发 onend 事件时距离 内容底部的距离, 默认为 0|
 |onresize|{function}|否|设定 组件每次初始化 滚动条高度时回调函数|
 
@@ -79,6 +79,9 @@ var iScroll = analogscroll(target, options);
 
 ## 更新记录
 
+
+### 1.4.0 - 2016-04-15
+* [ADD] 添加 op.onscroll(scrollTop, direction) 中 direction 属性
 
 ### 1.3.2 - 2016-04-14
 * [FIX] 修复 每次滚动鼠标滚轮 内容滚动距离 不等于 op.distance 问题
