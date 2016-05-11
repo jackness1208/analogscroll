@@ -79,6 +79,8 @@ var iScroll = analogscroll(target, options);
 
 ## 更新记录
 
+### 1.4.1 - 2016-05-11
+* [FIX] 修复 滚动时每次都触发 onend 事件 bug
 
 ### 1.4.0 - 2016-04-15
 * [ADD] 添加 op.onscroll(scrollTop, direction) 中 direction 属性
