@@ -2,8 +2,8 @@
  * Copyright 2016, jackness.org
  * Creator: Jackness Lau
  * $Author: Jackness Lau $
- * $Date: 2016.05.11 $
- * $Version: 1.4.1 $
+ * $Date: 2016.06.22 $
+ * $Version: 1.4.2 $
  */
 // 'use strict';
 (function($, window, document, undefined){
