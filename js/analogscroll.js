@@ -451,7 +451,9 @@
                             data = e.originalEvent['wheelDelta' + attrs[4]] || 
                                     -e.originalEvent['delta' + attrs[4]] || 
                                     e.originalEvent.wheelDelta || 
+                                    -e.originalEvent.detail || 
                                     -e.originalEvent.delta;
+
 
                         clearTimeout(setting.wheelKey);
                         setting.wheelKey = setTimeout(function(){

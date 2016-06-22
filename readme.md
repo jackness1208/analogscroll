@@ -79,6 +79,9 @@ var iScroll = analogscroll(target, options);
 
 ## 更新记录
 
+### 1.4.2 - 2016-06-22
+* [FIX] 修复 鼠标滚轮在 firefox 下不正常问题
+
 ### 1.4.1 - 2016-05-11
 * [FIX] 修复 滚动时每次都触发 onend 事件 bug
 
