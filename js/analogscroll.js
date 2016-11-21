@@ -476,6 +476,7 @@
 
 
                         clearTimeout(setting.wheelKey);
+                        console.log('wheel!', data)
                         setting.wheelKey = setTimeout(function(){
                             if(setting.isAni){
                                 return;
