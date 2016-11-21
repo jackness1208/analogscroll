@@ -83,6 +83,7 @@ var iScroll = analogscroll(target, options);
 
 ### 2.0.0 - 2016-11-21
 * [EDIT] 将组件从 通过 scrollTop/scrollLeft 方式模拟滚动条 改为性能更好的 通过 top/ left 方式改变内容位置
+* [EDIT] 优化 mac 下糟糕的 滚动体验
 
 ### 1.4.2 - 2016-06-22
 * [FIX] 修复 鼠标滚轮在 firefox 下不正常问题
