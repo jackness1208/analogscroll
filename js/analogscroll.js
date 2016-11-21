@@ -476,17 +476,21 @@
 
 
                         clearTimeout(setting.wheelKey);
-                        console.log('wheel!', data)
-                        setting.wheelKey = setTimeout(function(){
-                            if(setting.isAni){
-                                return;
-                            }
-                            if(data > 0){
-                                she.back();
-                            } else {
-                                she.forward();
-                            }
-                        }, 10);
+                        // console.log('wheel!', data)
+                        var So = -fn.px2Num($(el.cnt).css(attrs[2]));
+
+
+                        she.scrollTo(So - data, undefined, true)
+                        // setting.wheelKey = setTimeout(function(){
+                        //     if(setting.isAni){
+                        //         return;
+                        //     }
+                        //     if(data > 0){
+                        //         she.back();
+                        //     } else {
+                        //         she.forward();
+                        //     }
+                        // }, 10);
 
                         if((setting.isBegin && data > 0 && !op.onbegin) || (setting.isEnd && data < 0 && !op.onend)){
 
