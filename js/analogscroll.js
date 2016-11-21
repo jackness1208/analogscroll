@@ -3,8 +3,8 @@
  * Copyright 2016, jackness.org
  * Creator: Jackness Lau
  * $Author: Jackness Lau $
- * $Date: 2016.06.22 $
- * $Version: 1.4.2 $
+ * $Date: 2016.11.21 $
+ * $Version: 2.0.0 $
  */
 // 'use strict';
 (function($, window, document, undefined){
@@ -219,7 +219,6 @@
             }
 
             var seOffset = el.target["offset" + attrs[1]],
-                // seScroll = el.target["scroll" + attrs[1]],
                 seScroll = fn.px2Num($(el.cnt).css(attrs[2])) + el.cnt["offset" + attrs[1]],
                 sbOffset = el.scrollbar["offset" + attrs[1]];
 
@@ -237,8 +236,9 @@
             setting.b2eScale = sbOffset / seScroll;
 
             setting.contentLimit = seScroll - seOffset;
-            // setting.contentNow = el.target["scroll" + attrs[3]];
-            setting.contentNow = fn.px2Num($(el.cnt).css(attrs[2]));
+
+            console.log
+            setting.contentNow = -fn.px2Num($(el.cnt).css(attrs[2]));
 
             el.bar.style[attrs[0]] = sbOffset * setting.scale + "px";
             el.bar.style[attrs[2]] = setting.contentNow * setting.b2eScale + "px";
@@ -262,21 +262,7 @@
 
             she.scrollTo(So - op.distance, undefined, true);
 
-            // var nowPosition = parseFloat(el.bar.style[attrs[2]], 10),
-            //     myPosition,
-            //     moveDistance = op.distance;
-
-
-            // if(nowPosition - moveDistance > 0){
-            //     myPosition =  nowPosition - moveDistance;
-            // } else {
-            //     myPosition = 0;
-            // }
-
-            // el.bar.style[attrs[2]] = myPosition + "px";
-            // sf.b2cMapping(she);
         },
-        
         forward: function(){
             var she = this,
                 op = she.op,
@@ -285,22 +271,6 @@
                 So = -fn.px2Num($(el.cnt).css(attrs[2]));
 
             she.scrollTo(So + op.distance, undefined, true);
-
-            // var nowPosition = parseFloat(el.bar.style[attrs[2]]),
-            //     myPosition,
-            //     moveDistance = op.distance,
-            //     scrollWidth = el.scrollbar["offset" + attrs[1]] - el.bar["offset" + attrs[1]],
-
-
-
-            // if(nowPosition + moveDistance < scrollWidth){
-            //     myPosition = nowPosition + moveDistance;
-            // } else {
-            //     myPosition = scrollWidth;
-            // }
-
-            // el.bar.style[attrs[2]] = myPosition + "px";
-            // sf.b2cMapping(she);
         },
         scrollTo: function(d, done, noAni){
             var she = this,
@@ -320,7 +290,6 @@
                 interval = 20,
                 T = op.transition / interval,
                 Tn = 0,
-                // So = el.target['scroll' + attrs[3]],
                 So = fn.px2Num($(el.cnt).css(attrs[2])),
                 Sn = So,
                 St = -parseInt(d, 10),
@@ -337,7 +306,6 @@
                 if(Tn < T){
                     setting.isAni = true;
                     Sn = acc.Sn(Tn);
-                    // el.target['scroll' + attrs[3]] = Sn;
                     $(el.cnt).css(attrs[2], Sn + 'px');
 
                     setting.direction = Sn - So;
@@ -349,10 +317,6 @@
 
                 } else {
                     setting.isAni = false;
-                    // el.target['scroll' + attrs[3]] = St;
-                    // if(el.target['scroll' + attrs[3]] != St){
-                    //     setting.contentLimit = el.target['scroll' + attrs[1]];
-                    // }
                     $(el.cnt).css(attrs[2], St + 'px');
 
                     if(fn.px2Num($(el.cnt).css(attrs[2])) != St){
@@ -467,7 +431,7 @@
                     // content
                     wheel: function(e){
                         var 
-                            So = el.target['scroll' + attrs[3]],
+                            So = -fn.px2Num($(el.cnt).css(attrs[2])),
                             data = e.originalEvent['wheelDelta' + attrs[4]] || 
                                     -e.originalEvent['delta' + attrs[4]] || 
                                     e.originalEvent.wheelDelta || 
@@ -476,21 +440,9 @@
 
 
                         clearTimeout(setting.wheelKey);
-                        // console.log('wheel!', data)
-                        var So = -fn.px2Num($(el.cnt).css(attrs[2]));
 
 
-                        she.scrollTo(So - data, undefined, true)
-                        // setting.wheelKey = setTimeout(function(){
-                        //     if(setting.isAni){
-                        //         return;
-                        //     }
-                        //     if(data > 0){
-                        //         she.back();
-                        //     } else {
-                        //         she.forward();
-                        //     }
-                        // }, 10);
+                        she.scrollTo(So - data, undefined, true);
 
                         if((setting.isBegin && data > 0 && !op.onbegin) || (setting.isEnd && data < 0 && !op.onend)){
 
