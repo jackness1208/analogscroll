@@ -7,11 +7,13 @@
     <span class="bar"></span>
 </div>
 ```
-* target 为需要添加滚动条的主体内容, 需通过样式设置成 overflow: hidden， 组件才能正常渲染。
+* target 为需要添加滚动条的主体内容, 需通过样式设置成 overflow: hidden， position:relative, 并且里面有且只有 1个div, 样式设置为 position: absolute 用于改变其 top/left 来实现滚动。 组件才能正常渲染。
 ```html
 <div class="main-area" style="overflow: hidden;">
-    <div class="text-cnt">
-    some text...
+    <div>
+        <div class="text-cnt">
+        some text...
+        </div>
     </div>
 </div>
 ```
@@ -78,6 +80,9 @@ var iScroll = analogscroll(target, options);
 例子在[这里](http://www.jackness.org/lab/2016/analogscroll/demo/demo.html)
 
 ## 更新记录
+
+### 2.0.0 - 2016-11-21
+* [EDIT] 将组件从 通过 scrollTop/scrollLeft 方式模拟滚动条 改为性能更好的 通过 top/ left 方式改变内容位置
 
 ### 1.4.2 - 2016-06-22
 * [FIX] 修复 鼠标滚轮在 firefox 下不正常问题

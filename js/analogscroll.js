@@ -1,3 +1,4 @@
+'use strict';
 /**
  * Copyright 2016, jackness.org
  * Creator: Jackness Lau
@@ -41,6 +42,13 @@
                     e.preventDefault();
                 }
                 e.returnValue = false;
+            },
+            px2Num: function(ctx){
+                if(ctx == 'auto'){
+                    return 0;
+                } else {
+                    return parseInt(ctx, 10);
+                }
             },
             stopBubble: function(e){
                 e = e || window.event; 
@@ -129,7 +137,8 @@
 
                 setting.direction = setting.contentNow - contentPrep;
 
-                el.target["scroll" + attrs[3]] = setting.contentNow;
+                // el.target["scroll" + attrs[3]] = setting.contentNow;
+                $(el.cnt).css(attrs[2], -setting.contentNow + 'px');
 
                 sf.positionCheck(she);
             },
@@ -139,7 +148,7 @@
                     el = she.el,
                     setting = she.setting,
                     attrs = she.attrs,
-                    nowPosition = setting.contentNow = el.target["scroll" + attrs[3]];
+                    nowPosition = setting.contentNow = -fn.px2Num($(el.cnt).css(attrs[2]));
 
                 el.bar.style[attrs[2]] = nowPosition * setting.b2eScale + 'px';
 
@@ -210,8 +219,10 @@
             }
 
             var seOffset = el.target["offset" + attrs[1]],
-                seScroll = el.target["scroll" + attrs[1]],
+                // seScroll = el.target["scroll" + attrs[1]],
+                seScroll = fn.px2Num($(el.cnt).css(attrs[2])) + el.cnt["offset" + attrs[1]],
                 sbOffset = el.scrollbar["offset" + attrs[1]];
+
 
             //可视区域与区域总长之间的比例
             setting.scale = 0;
@@ -226,7 +237,8 @@
             setting.b2eScale = sbOffset / seScroll;
 
             setting.contentLimit = seScroll - seOffset;
-            setting.contentNow = el.target["scroll" + attrs[3]];
+            // setting.contentNow = el.target["scroll" + attrs[3]];
+            setting.contentNow = fn.px2Num($(el.cnt).css(attrs[2]));
 
             el.bar.style[attrs[0]] = sbOffset * setting.scale + "px";
             el.bar.style[attrs[2]] = setting.contentNow * setting.b2eScale + "px";
@@ -245,7 +257,7 @@
                 op = she.op,
                 el = she.el,
                 attrs = she.attrs,
-                So = el.target['scroll' + attrs[3]];
+                So = -fn.px2Num($(el.cnt).css(attrs[2]));
 
 
             she.scrollTo(So - op.distance, undefined, true);
@@ -270,7 +282,7 @@
                 op = she.op,
                 el = she.el,
                 attrs = she.attrs,
-                So = el.target['scroll' + attrs[3]];
+                So = -fn.px2Num($(el.cnt).css(attrs[2]));
 
             she.scrollTo(So + op.distance, undefined, true);
 
@@ -308,9 +320,10 @@
                 interval = 20,
                 T = op.transition / interval,
                 Tn = 0,
-                So = el.target['scroll' + attrs[3]],
+                // So = el.target['scroll' + attrs[3]],
+                So = fn.px2Num($(el.cnt).css(attrs[2])),
                 Sn = So,
-                St = parseInt(d, 10),
+                St = -parseInt(d, 10),
                 acc = fn.inertiaMotion(So, St, T);
 
             if(noAni){
@@ -324,7 +337,8 @@
                 if(Tn < T){
                     setting.isAni = true;
                     Sn = acc.Sn(Tn);
-                    el.target['scroll' + attrs[3]] = Sn;
+                    // el.target['scroll' + attrs[3]] = Sn;
+                    $(el.cnt).css(attrs[2], Sn + 'px');
 
                     setting.direction = Sn - So;
 
@@ -335,10 +349,14 @@
 
                 } else {
                     setting.isAni = false;
-                    el.target['scroll' + attrs[3]] = St;
+                    // el.target['scroll' + attrs[3]] = St;
+                    // if(el.target['scroll' + attrs[3]] != St){
+                    //     setting.contentLimit = el.target['scroll' + attrs[1]];
+                    // }
+                    $(el.cnt).css(attrs[2], St + 'px');
 
-                    if(el.target['scroll' + attrs[3]] != St){
-                        setting.contentLimit = el.target['scroll' + attrs[1]];
+                    if(fn.px2Num($(el.cnt).css(attrs[2])) != St){
+                        setting.contentLimit = fn.px2Num($(el.cnt).css(attrs[2])) + el.target['offset' + attrs[1]];
                     }
 
                     setting.direction = St - So;
@@ -379,6 +397,7 @@
                 
                 el = she.el = {
                     target: $(target)[0],
+                    cnt: $(target).children().eq(0)[0],
                     scrollbar: $(she.op.scrollbar)[0],
                     bar: $(she.op.scrollbar).children()[0],
                     back: $(she.op.back),
@@ -388,6 +407,7 @@
             if(!el.target || !el.scrollbar){
                 return;
             }
+
 
             she.resize();
 
