@@ -81,6 +81,9 @@ var iScroll = analogscroll(target, options);
 
 ## 更新记录
 
+### 2.1.0 - 2016-11-28
+* [EDIT] 针对图片长列表对组件做性能优化
+
 ### 2.0.0 - 2016-11-21
 * [EDIT] 将组件从 通过 scrollTop/scrollLeft 方式模拟滚动条 改为性能更好的 通过 top/ left 方式改变内容位置
 * [EDIT] 优化 mac 下糟糕的 滚动体验

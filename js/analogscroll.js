@@ -4,7 +4,7 @@
  * Creator: Jackness Lau
  * $Author: Jackness Lau $
  * $Date: 2016.11.21 $
- * $Version: 2.0.0 $
+ * $Version: 2.0.1 $
  */
 // 'use strict';
 (function($, window, document, undefined){
@@ -122,6 +122,52 @@
         },
         // analogscroll 用 私有方法
         sf = {
+            niceCnt: {
+                get: function(ctrl){
+                    var 
+                        she = ctrl,
+                        setting = she.setting;
+                    return setting.cntPos || 0;
+
+                },
+                set: function(ctrl, pos){
+                    var 
+                        she = ctrl,
+                        el = she.el,
+                        setting = she.setting,
+                        attrs = she.attrs,
+                        interval = 200;
+
+
+                    setting.cntPos = pos;
+                    if(!setting.cntNow){
+                        setting.cntNow = new Date();
+                    }
+
+                    var currentTime = new Date();
+
+                    clearTimeout(setting.niceCntKey);
+                    if(fn.px2Num($(el.cnt).css(attrs[2])) == pos){
+                        return;
+
+                    }
+                    if(currentTime - setting.cntNow >= interval){
+                        $(el.cnt).css(attrs[2], pos + 'px');
+                        setting.cntNow = currentTime;
+                    } else {
+                        setting.niceCntKey = setTimeout(function(){
+                            $(el.cnt).css(attrs[2], pos + 'px');
+                            setting.cntNow = new Date();
+                        }, interval);
+
+                    }
+
+                    // clearTimeout(setting.niceCntKey);
+                    // setting.niceCntKey = setTimeout(function(){
+                    //     $(el.cnt).css(attrs[2], pos + 'px');
+                    // }, 20);
+                }
+            },
             b2cMapping: function(ctrl){
                 var 
                     she = ctrl,
@@ -137,8 +183,7 @@
 
                 setting.direction = setting.contentNow - contentPrep;
 
-                // el.target["scroll" + attrs[3]] = setting.contentNow;
-                $(el.cnt).css(attrs[2], -setting.contentNow + 'px');
+                sf.niceCnt.set(she, -setting.contentNow);
 
                 sf.positionCheck(she);
             },
@@ -148,7 +193,7 @@
                     el = she.el,
                     setting = she.setting,
                     attrs = she.attrs,
-                    nowPosition = setting.contentNow = -fn.px2Num($(el.cnt).css(attrs[2]));
+                    nowPosition = setting.contentNow = -sf.niceCnt.get(she);
 
                 el.bar.style[attrs[2]] = nowPosition * setting.b2eScale + 'px';
 
@@ -218,27 +263,27 @@
                 attrs = ["height","Height","top","Top"];
             }
 
+
             var seOffset = el.target["offset" + attrs[1]],
-                seScroll = fn.px2Num($(el.cnt).css(attrs[2])) + el.cnt["offset" + attrs[1]],
+                seScroll = el.cnt["offset" + attrs[1]],
                 sbOffset = el.scrollbar["offset" + attrs[1]];
 
 
             //可视区域与区域总长之间的比例
             setting.scale = 0;
 
-            if(seOffset >= seScroll){
+            if(seOffset >= seScroll || seScroll === 0){
                 setting.scale = 1;
             } else {
                 setting.scale = seOffset / seScroll;
             }
 
             //区域与滚动条之间的比例
-            setting.b2eScale = sbOffset / seScroll;
+            setting.b2eScale = seScroll === 0 ? 0: sbOffset / seScroll;
 
             setting.contentLimit = seScroll - seOffset;
 
-            console.log
-            setting.contentNow = -fn.px2Num($(el.cnt).css(attrs[2]));
+            setting.contentNow = -sf.niceCnt.get(she);
 
             el.bar.style[attrs[0]] = sbOffset * setting.scale + "px";
             el.bar.style[attrs[2]] = setting.contentNow * setting.b2eScale + "px";
@@ -255,9 +300,7 @@
         back: function(){
             var she = this,
                 op = she.op,
-                el = she.el,
-                attrs = she.attrs,
-                So = -fn.px2Num($(el.cnt).css(attrs[2]));
+                So = -sf.niceCnt.get(she);
 
 
             she.scrollTo(So - op.distance, undefined, true);
@@ -266,9 +309,7 @@
         forward: function(){
             var she = this,
                 op = she.op,
-                el = she.el,
-                attrs = she.attrs,
-                So = -fn.px2Num($(el.cnt).css(attrs[2]));
+                So = -sf.niceCnt.get(she);
 
             she.scrollTo(So + op.distance, undefined, true);
         },
@@ -290,7 +331,7 @@
                 interval = 20,
                 T = op.transition / interval,
                 Tn = 0,
-                So = fn.px2Num($(el.cnt).css(attrs[2])),
+                So = sf.niceCnt.get(she),
                 Sn = So,
                 St = -parseInt(d, 10),
                 acc = fn.inertiaMotion(So, St, T);
@@ -306,7 +347,7 @@
                 if(Tn < T){
                     setting.isAni = true;
                     Sn = acc.Sn(Tn);
-                    $(el.cnt).css(attrs[2], Sn + 'px');
+                    sf.niceCnt.set(she, Sn);
 
                     setting.direction = Sn - So;
 
@@ -317,10 +358,10 @@
 
                 } else {
                     setting.isAni = false;
-                    $(el.cnt).css(attrs[2], St + 'px');
+                    sf.niceCnt.set(she, St);
 
-                    if(fn.px2Num($(el.cnt).css(attrs[2])) != St){
-                        setting.contentLimit = fn.px2Num($(el.cnt).css(attrs[2])) + el.target['offset' + attrs[1]];
+                    if(sf.niceCnt.get(she) != St){
+                        setting.contentLimit = sf.niceCnt.get(she) + el.target['offset' + attrs[1]];
                     }
 
                     setting.direction = St - So;
@@ -431,7 +472,7 @@
                     // content
                     wheel: function(e){
                         var 
-                            So = -fn.px2Num($(el.cnt).css(attrs[2])),
+                            So = -sf.niceCnt.get(she),
                             data = e.originalEvent['wheelDelta' + attrs[4]] || 
                                     -e.originalEvent['delta' + attrs[4]] || 
                                     e.originalEvent.wheelDelta || 

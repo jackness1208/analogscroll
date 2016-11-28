@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title></title>
+</head>
+<style type="text/css">
+body {
+    padding: 0;
+    margin: 0;
+}
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+.page-area {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+.page-area-content {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 0;
+}
+.page-scroll {
+    position: absolute;
+    height: 100%;
+    right: 0;
+    top: 0;
+    width: 20px;
+    background: #e1e1e1;
+}
+.page-scroll span {
+    position: absolute;
+    width: 100%;
+    height: 100px;
+    background: #666;
+    cursor: pointer;
+}
+.page-scroll span:hover {
+    background: #333;
+}
+.list {
+    zoom: 1;
+
+}
+.list:after {
+    content: '';
+    display: block;
+    height: 0;
+    overflow: hidden;
+    clear: both;
+}
+.list li {
+    float: left;
+    display: inline;
+    width: 300px;
+    height: 225px;
+    margin: 0 20px 20px;
+    border: 1px solid #ccc;
+    border-bottom-width: 10px;
+}
+.list li img {
+    width: 100%;
+    height: 100%;
+}
+
+</style>
+<body>
+<div class="page-area" id="content">
+    <div class="page-area-content" id="content">
+        <ul class="list" id="list">
+        </ul>
+
+    
+    </div>
+</div>
+
+<div class='page-scroll' id="vScrollbar">
+    <span></span>
+</div>
+</body>
+<script src="../lib/jquery/jquery-1.11.3.min.js"></script>
+<script src="../js/analogscroll.js"></script>
+<script>
+(function(){
+    var tpl = '<li><img src="{$cover}"/></li>',
+        covers = [
+            'http://zymsc.bs2cdn.yy.com/7342f31b-7a0e-4e14-888c-034be898dec1',
+            'http://zymsc.bs2cdn.yy.com/aa076b47-1a59-462d-83b8-d359dd3cb73a',
+            'http://zymsc.bs2cdn.yy.com/ab85c7ab-1614-4bd7-9575-8e2bfbbdb576',
+            'http://zymsc.bs2cdn.yy.com/ab85c7ab-1614-4bd7-9575-8e2bfbbdb576',
+            'http://zymsc.bs2cdn.yy.com/413de1c4-a333-4f8f-bd1d-ef82360d0dc4',
+            'http://zymsc.bs2cdn.yy.com/2b80e70b-e7c0-4cc5-beb0-176583fbb7ed',
+            'http://zymsc.bs2cdn.yy.com/d0d6b353-ab25-4945-aa75-596437e245a1',
+            'http://zymsc.bs2cdn.yy.com/1d51bdd8-341c-4ba1-bf37-73bcced4341b',
+            'http://zymsc.bs2cdn.yy.com/166c783b-14b5-4deb-b343-24d30045c5e2',
+            'http://zymsc.bs2cdn.yy.com/c7891e38-2ee5-4c8b-9292-4d52958c15c1',
+            'http://zymsc.bs2cdn.yy.com/7788f941-c701-438f-9b36-1ed125522ada',
+            'http://zymsc.bs2cdn.yy.com/fca980b0-2b2e-42ed-b95e-eb7d70e0c4e6',
+            'http://zymsc.bs2cdn.yy.com/f8338d0f-4d2e-4e1a-8ce1-e69e84b22eff',
+            'http://zymsc.bs2cdn.yy.com/e2ed47cd-19a8-408d-b1e1-040afcacfb29',
+            'http://emyfs.bs2dl.yy.com/YjFiYjBlYWMtMTg2Mi00YWQ5LTg2MTItNGY0ODA3N2FlODY0.jpg',
+            'http://emyfs.bs2dl.yy.com/YjQ4NjYwMjEtMDc2Ny00ZTExLWE5MTAtYmUwNzUzNjhlMTRj.jpg',
+            'http://emyfs.bs2dl.yy.com/ZmVlZjVlYzgtM2JjMi00Y2E0LWFjNTAtMmU0YmQ0Zjc4N2U1.jpg',
+            'http://emyfs.bs2dl.yy.com/M2U5YzMyN2MtZTk4Yy00MzlkLWFmNTYtYjI0ODg5ODc3NjIz.jpg',
+            'http://emyfs.bs2dl.yy.com/OGVhMjU2ODUtYWFhYS00NDBlLTgwNzctZjliMjIzYmU4MjFk.jpg',
+            'http://emyfs.bs2cdn.yy.com/MzViY2MxMzAtYjM5Zi00MTJlLTkxOTktYzRkMmMyYTVlNGY5.jpg'
+        ];
+
+    var iHtml = '';
+    for(var i = 0, len = 1500; i < len; i++){
+        iHtml += tpl.replace('{$cover}', covers[i % 20]);
+    }
+    $('#list').html(iHtml);
+    analogscroll('#content', {
+        scrollbar: '#vScrollbar',
+        transition: 500
+    });
+})();
+
+</script>
+</html>
