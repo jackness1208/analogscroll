@@ -3,8 +3,8 @@
  * Copyright 2016, jackness.org
  * Creator: Jackness Lau
  * $Author: Jackness Lau $
- * $Date: 2016.11.28 $
- * $Version: 2.1.0 $
+ * $Date: 2016.11.29 $
+ * $Version: 2.1.1 $
  */
 // 'use strict';
 (function($, window, document, undefined){
@@ -136,7 +136,7 @@
                         el = she.el,
                         setting = she.setting,
                         attrs = she.attrs,
-                        interval = 200;
+                        interval = 50;
 
 
                     setting.cntPos = pos;
@@ -281,9 +281,23 @@
             //区域与滚动条之间的比例
             setting.b2eScale = seScroll === 0 ? 0: sbOffset / seScroll;
 
-            setting.contentLimit = seScroll - seOffset;
+            if(seOffset > seScroll){
+                setting.contentLimit = 0;
+
+            } else {
+                setting.contentLimit = seScroll - seOffset;
+            }
 
             setting.contentNow = -sf.niceCnt.get(she);
+
+            if(setting.contentNow < 0){
+                setting.contentNow = 0;
+                sf.niceCnt.set(she, -setting.contentNow);
+            }
+            if(setting.contentNow > setting.contentLimit){
+                setting.contentNow = setting.contentLimit;
+                sf.niceCnt.set(she, -setting.contentNow);
+            }
 
             el.bar.style[attrs[0]] = sbOffset * setting.scale + "px";
             el.bar.style[attrs[2]] = setting.contentNow * setting.b2eScale + "px";

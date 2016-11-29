@@ -116,9 +116,12 @@ html, body {
         iHtml += tpl.replace('{$cover}', covers[i % 20]);
     }
     $('#list').html(iHtml);
-    analogscroll('#content', {
+    var iScroll = analogscroll('#content', {
         scrollbar: '#vScrollbar',
         transition: 500
+    });
+    $(window).on('resize', function(){
+        iScroll.resize();
     });
 })();
 
