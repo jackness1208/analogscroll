@@ -91,7 +91,9 @@
 
             },
             onresize: function(scale){
-                console.log('resize!', scale);
+                if(window.console){
+                    console.log('resize!', scale);
+                }
             },
             onscroll: function(scrollTop, direction){
                 info.innerHTML = 'direction:' + direction;
