@@ -4,7 +4,7 @@
  * Creator: Jackness Lau
  * $Author: Jackness Lau $
  * $Date: 2016.12.07 $
- * $Version: 2.2.0 $
+ * $Version: 2.3.0 $
  */
 // 'use strict';
 (function($, window, document, undefined){
@@ -134,38 +134,12 @@
                     var 
                         she = ctrl,
                         el = she.el,
-                        setting = she.setting,
                         attrs = she.attrs,
-                        interval = setting.niceInterval;
-
+                        setting = she.setting;
 
                     setting.cntPos = pos;
-                    if(!setting.cntNow){
-                        setting.cntNow = new Date();
-                    }
-
-                    var currentTime = new Date();
-
-                    clearTimeout(setting.niceCntKey);
-                    if(fn.px2Num($(el.cnt).css(attrs[2])) == pos){
-                        return;
-
-                    }
-                    if(currentTime - setting.cntNow >= interval){
-                        $(el.cnt).css(attrs[2], pos + 'px');
-                        setting.cntNow = currentTime;
-                    } else {
-                        setting.niceCntKey = setTimeout(function(){
-                            $(el.cnt).css(attrs[2], pos + 'px');
-                            setting.cntNow = new Date();
-                        }, interval);
-
-                    }
-
-                    // clearTimeout(setting.niceCntKey);
-                    // setting.niceCntKey = setTimeout(function(){
-                    //     $(el.cnt).css(attrs[2], pos + 'px');
-                    // }, 20);
+                    // $(el.cnt).attr('scroll' + attrs[3], pos);
+                    $(el.cnt)['scroll' + attrs[3]](pos);
                 }
             },
             b2cMapping: function(ctrl){
@@ -183,7 +157,7 @@
 
                 setting.direction = setting.contentNow - contentPrep;
 
-                sf.niceCnt.set(she, -setting.contentNow);
+                sf.niceCnt.set(she, setting.contentNow);
 
                 sf.positionCheck(she);
             },
@@ -193,7 +167,8 @@
                     el = she.el,
                     setting = she.setting,
                     attrs = she.attrs,
-                    nowPosition = setting.contentNow = -sf.niceCnt.get(she);
+                    nowPosition = setting.contentNow = sf.niceCnt.get(she);
+
 
                 el.bar.style[attrs[2]] = nowPosition * setting.b2eScale + 'px';
 
@@ -257,15 +232,20 @@
                 attrs = [];
 
             if( op.direction == "x" ){
-                attrs = ["width","Width","left","Left"];
+                attrs = ["width","Width","left","Left", 'bottom'];
 
             } else {
-                attrs = ["height","Height","top","Top"];
+                attrs = ["height","Height","top","Top", 'right'];
             }
 
+            // console.log($(el.target).height(), el.cnt)
+            $(el.target).css('overflow', 'hidden');
+            $(el.cnt).css('height', $(el.target).height() + 'px');
+            $(el.cnt).css('width', $(el.target).width() + 'px');
+            $(el.cnt).css('padding-' + attrs[4], setting.barWidth + 'px');
 
             var seOffset = el.target["offset" + attrs[1]],
-                seScroll = el.cnt["offset" + attrs[1]],
+                seScroll = el.cnt["scroll" + attrs[1]],
                 sbOffset = el.scrollbar["offset" + attrs[1]];
 
 
@@ -287,17 +267,18 @@
             } else {
                 setting.contentLimit = seScroll - seOffset;
             }
+            
 
-            setting.contentNow = -sf.niceCnt.get(she);
+            // setting.contentNow = sf.niceCnt.get(she);
 
-            if(setting.contentNow < 0){
-                setting.contentNow = 0;
-                sf.niceCnt.set(she, -setting.contentNow);
-            }
-            if(setting.contentNow > setting.contentLimit){
-                setting.contentNow = setting.contentLimit;
-                sf.niceCnt.set(she, -setting.contentNow);
-            }
+            // if(setting.contentNow < 0){
+            //     setting.contentNow = 0;
+            //     sf.niceCnt.set(she, -setting.contentNow);
+            // }
+            // if(setting.contentNow > setting.contentLimit){
+            //     setting.contentNow = setting.contentLimit;
+            //     sf.niceCnt.set(she, -setting.contentNow);
+            // }
 
             el.bar.style[attrs[0]] = sbOffset * setting.scale + "px";
             el.bar.style[attrs[2]] = setting.contentNow * setting.b2eScale + "px";
@@ -317,7 +298,7 @@
         back: function(){
             var she = this,
                 op = she.op,
-                So = -sf.niceCnt.get(she);
+                So = sf.niceCnt.get(she);
 
 
             she.scrollTo(So - op.distance, undefined, true);
@@ -326,7 +307,7 @@
         forward: function(){
             var she = this,
                 op = she.op,
-                So = -sf.niceCnt.get(she);
+                So = sf.niceCnt.get(she);
 
             she.scrollTo(So + op.distance, undefined, true);
         },
@@ -350,7 +331,7 @@
                 Tn = 0,
                 So = sf.niceCnt.get(she),
                 Sn = So,
-                St = -parseInt(d, 10),
+                St = parseInt(d, 10),
                 acc = fn.inertiaMotion(So, St, T);
 
             if(noAni){
@@ -416,7 +397,8 @@
                     // 当前滚动方向（距离）
                     direction: 0,
 
-                    niceInterval: 50
+                    barWidth: 20
+
                 },
                 
                 el = she.el = {
@@ -431,6 +413,20 @@
             if(!el.target || !el.scrollbar){
                 return;
             }
+
+            // el cnt 初始化
+            $(el.cnt).css('position', 'relative');
+            $(el.cnt).css('overflow-' + she.op.direction, 'scroll');
+            $(el.cnt).on('scroll', function(e){
+                var nowScroll = $(el.cnt)['scroll' + attrs[3]](),
+                    prevScroll = sf.niceCnt.get(she);
+                if(nowScroll == prevScroll){
+                    return;
+                }
+                setting.cntPos = nowScroll;
+                sf.c2bMapping(she);
+
+            });
 
 
             she.resize();
@@ -487,29 +483,6 @@
                         $(document).unbind('mouseup', mouseEvt.up);
                         $(window).unbind('losecapture', mouseEvt.up);
                         $(window).unbind('blur', mouseEvt.up);
-                    },
-                    // content
-                    wheel: function(e){
-                        var 
-                            So = -sf.niceCnt.get(she),
-                            data = e.originalEvent['wheelDelta' + attrs[4]] || 
-                                    -e.originalEvent['delta' + attrs[4]] || 
-                                    e.originalEvent.wheelDelta || 
-                                    -e.originalEvent.detail || 
-                                    -e.originalEvent.delta;
-
-
-                        clearTimeout(setting.wheelKey);
-
-
-                        she.scrollTo(So - data, undefined, true);
-
-                        if((setting.isBegin && data > 0 && !op.onbegin) || (setting.isEnd && data < 0 && !op.onend)){
-
-                        } else {
-                            fn.preventDefault(e);
-                            fn.stopBubble(e);
-                        }
                     }
                 };
 
@@ -517,15 +490,6 @@
                 attrs = she.attrs = ["width","Width","left","Left","X"];
             } else {
                 attrs = she.attrs = ["height","Height","top","Top","Y"];
-                if("onmousewheel" in el.target){
-                    $(el.target).bind('mousewheel', mouseEvt.wheel);
-                    $(el.scrollbar).bind('mousewheel', mouseEvt.wheel);
-
-                } else {
-                    $(el.target).bind('DOMMouseScroll', mouseEvt.wheel);
-                    $(el.scrollbar).bind('DOMMouseScroll', mouseEvt.wheel);
-
-                }
             }
 
             //滚动条滑块初始化
