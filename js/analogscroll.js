@@ -4,7 +4,7 @@
  * Creator: Jackness Lau
  * $Author: Jackness Lau $
  * $Date: 2016.12.07 $
- * $Version: 2.3.0 $
+ * $Version: 2.3.1 $
  */
 // 'use strict';
 (function($, window, document, undefined){
@@ -255,11 +255,11 @@
             if(seOffset >= seScroll || seScroll === 0){
                 setting.scale = 1;
             } else {
-                setting.scale = seOffset / seScroll;
+                setting.scale = Math.round(seOffset / seScroll * 100) / 100;
             }
 
             //区域与滚动条之间的比例
-            setting.b2eScale = seScroll === 0 ? 0: sbOffset / seScroll;
+            setting.b2eScale = seScroll === 0 ? 0: Math.round(sbOffset / seScroll * 100) / 100;
 
             if(seOffset > seScroll){
                 setting.contentLimit = 0;

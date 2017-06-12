@@ -81,6 +81,9 @@ var iScroll = analogscroll(target, options);
 
 ## 更新记录
 
+### 2.3.1 - 2017-06-12
+* [FIX] 修复 options.onresize 会返回奇怪的 比例问题 如 (0.99531125442)
+
 ### 2.3.0 - 2016-12-07
 * [EDIT] 将模拟滚动条展现形式改成 真实滚动条 + 遮盖 + 模拟滑块实现
 
