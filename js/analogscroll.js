@@ -4,7 +4,7 @@
  * Creator: Jackness Lau
  * $Author: Jackness Lau $
  * $Date: 2016.12.07 $
- * $Version: 2.3.1 $
+ * $Version: 2.3.2 $
  */
 // 'use strict';
 (function($, window, document, undefined){
@@ -241,8 +241,7 @@
             // console.log($(el.target).height(), el.cnt)
             $(el.target).css('overflow', 'hidden');
             $(el.cnt).css('height', $(el.target).height() + 'px');
-            $(el.cnt).css('width', $(el.target).width() + 'px');
-            $(el.cnt).css('padding-' + attrs[4], setting.barWidth + 'px');
+            $(el.cnt).css('width', $(el.target).width() + setting.barWidth + 'px');
 
             var seOffset = el.target["offset" + attrs[1]],
                 seScroll = el.cnt["scroll" + attrs[1]],
@@ -589,6 +588,7 @@
         window.analogscroll = analogscroll;
     }
 })($, window, document);
+
 
 
 

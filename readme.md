@@ -81,6 +81,10 @@ var iScroll = analogscroll(target, options);
 
 ## 更新记录
 
+
+### 2.3.2 - 2017-06-13
+* [FIX] 修复 滚动组件会让页面本来元素 多出 barwidth 那么多的 padding 问题
+
 ### 2.3.1 - 2017-06-12
 * [FIX] 修复 options.onresize 会返回奇怪的 比例问题 如 (0.99531125442)
 
