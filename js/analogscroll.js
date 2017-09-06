@@ -4,7 +4,7 @@
  * Creator: Jackness Lau
  * $Author: Jackness Lau $
  * $Date: 2016.12.07 $
- * $Version: 2.3.2 $
+ * $Version: 2.3.3 $
  */
 // 'use strict';
 (function($, window, document, undefined){
@@ -167,10 +167,15 @@
                     el = she.el,
                     setting = she.setting,
                     attrs = she.attrs,
-                    nowPosition = setting.contentNow = sf.niceCnt.get(she);
+                    nowPosition = setting.contentNow = sf.niceCnt.get(she),
+                    iNow = nowPosition * setting.b2eScale,
+                    barLimit = el.scrollbar['offset' + attrs[1]] - el.bar['offset' + attrs[1]];
 
+                if(iNow > barLimit){
+                    iNow = barLimit;
+                }
 
-                el.bar.style[attrs[2]] = nowPosition * setting.b2eScale + 'px';
+                el.bar.style[attrs[2]] = iNow + 'px';
 
                 sf.positionCheck(she);
             },
@@ -238,7 +243,6 @@
                 attrs = ["height","Height","top","Top", 'right'];
             }
 
-            // console.log($(el.target).height(), el.cnt)
             $(el.target).css('overflow', 'hidden');
             $(el.cnt).css('height', $(el.target).height() + 'px');
             $(el.cnt).css('width', $(el.target).width() + setting.barWidth + 'px');
@@ -287,7 +291,7 @@
                 op.onscroll( setting.contentNow, setting.direction);
             }
             if(op.onresize){
-                op.onresize(setting.b2eScale);
+                op.onresize(setting.scale);
             }
 
             // 调整滚动刷新间间距
@@ -416,7 +420,7 @@
             // el cnt 初始化
             $(el.cnt).css('position', 'relative');
             $(el.cnt).css('overflow-' + she.op.direction, 'scroll');
-            $(el.cnt).on('scroll', function(e){
+            $(el.cnt).on('scroll', function(){
                 var nowScroll = $(el.cnt)['scroll' + attrs[3]](),
                     prevScroll = sf.niceCnt.get(she);
                 if(nowScroll == prevScroll){

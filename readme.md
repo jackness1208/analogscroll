@@ -81,6 +81,8 @@ var iScroll = analogscroll(target, options);
 
 ## 更新记录
 
+### 2.3.3 - 2017-09-06
+* [FIX] 修复 滚动组件使用 scrollTo 方法时如数值超标会导致滚动条超出 滚动框范围问题
 
 ### 2.3.2 - 2017-06-13
 * [FIX] 修复 滚动组件会让页面本来元素 多出 barwidth 那么多的 padding 问题
