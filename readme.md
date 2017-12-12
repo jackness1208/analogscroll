@@ -81,6 +81,9 @@ var iScroll = analogscroll(target, options);
 
 ## 更新记录
 
+### 2.4.0 - 2017-12-12
+* [EDIT] 增加 `module.exports` 模式支持
+
 ### 2.3.3 - 2017-09-06
 * [FIX] 修复 滚动组件使用 scrollTo 方法时如数值超标会导致滚动条超出 滚动框范围问题
 
