@@ -23,8 +23,11 @@
             // 滚动动画过渡
             transition: 500,
 
+            // 允许滚动冒泡
+            bubble: true,
+
             // 距离 底部多少像素时开始触发 onend
-            endDistance: 40,
+            endDistance: 0,
 
             onend: undefined,
 
@@ -149,7 +152,7 @@
                     setting = she.setting,
                     attrs = she.attrs,
 
-                    contentPrep = el.target["scroll" + attrs[3]],
+                    contentPrep = el.cnt["scroll" + attrs[3]],
                     nowPostion = parseFloat(el.bar.style[attrs[2]], 10);
 
 
@@ -236,8 +239,7 @@
                 setting = she.setting,
                 targetWidth = $(el.target).width(),
                 targetHeight = $(el.target).height(),
-                attrs = [],
-                iData = $(el.cnt).data();
+                attrs = [];
 
 
             if($(el.cnt).attr('data-direction-x')){
@@ -416,7 +418,25 @@
                     // 当前滚动方向（距离）
                     direction: 0,
 
-                    barWidth: 20
+                    barWidth: (function(){
+                        var 
+                            frag = document.createElement('div'),
+                            r = 0;
+
+                        frag.style.cssText = [
+                            'position: absolute',
+                            'left: 0',
+                            'top: 0',
+                            'width: 50px',
+                            'height: 10px',
+                            'overflow-y: scroll'
+                        ].join(';');
+                        document.body.appendChild(frag);
+                        r = frag.offsetWidth - frag.scrollWidth;
+                        document.body.removeChild(frag);
+                        return r;
+
+                    })()
 
                 },
                 
@@ -437,16 +457,43 @@
             $(el.cnt).attr('data-direction-' + she.op.direction, '1');
             $(el.cnt).css('position', 'relative');
             $(el.cnt).css('overflow-' + she.op.direction, 'scroll');
+
+
+            if(!she.op.bubble){ // 阻止滚动冒泡相关逻辑
+
+                var scrollKey;
+                var scrollNum = -1;
+                if(she.op.direction == 'x'){
+                    scrollKey = 'scrollLeft';
+
+                } else {
+                    scrollKey = 'scrollTop';
+                }
+
+                $(el.cnt).on('mouseenter', function(){
+                    scrollNum = $(window)[scrollKey]();
+                });
+                $(el.cnt).on('mouseleave', function(){
+                    scrollNum = -1;
+                });
+
+                $(window).on('scroll', function(){
+                    return scrollNum !== -1 && $(this)[scrollKey](scrollNum);
+                });
+            }
+
             $(el.cnt).on('scroll', function(){
                 var nowScroll = $(el.cnt)['scroll' + attrs[3]](),
                     prevScroll = sf.niceCnt.get(she);
                 if(nowScroll == prevScroll){
                     return;
                 }
+                setting.direction = nowScroll - prevScroll;
                 setting.cntPos = nowScroll;
                 sf.c2bMapping(she);
 
             });
+
 
 
             she.resize();
@@ -492,6 +539,7 @@
                         if(nowPostion > (el.scrollbar["offset" + attrs[1]] - el.bar["offset" + attrs[1]])){
                             nowPostion = (el.scrollbar["offset" + attrs[1]] - el.bar["offset" + attrs[1]]);
                         }
+
 
                         el.bar.style[attrs[2]] = nowPostion + "px";
                         sf.b2cMapping(she);

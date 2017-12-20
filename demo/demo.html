@@ -84,6 +84,7 @@ body { height: 2000px; overflow-y: scroll; }
             forward: '#vBottomBtn',
             back: '#vTopBtn',
             transition: 500,
+            bubble: false,
             onbegin: function(){
                 info.innerHTML = 'at bar top';
             },
@@ -97,7 +98,6 @@ body { height: 2000px; overflow-y: scroll; }
                 }
             },
             onscroll: function(scrollTop, direction){
-                console.log('scroll', scrollTop, direction)
                 info.innerHTML = 'direction:' + direction;
             }
         }),
@@ -107,10 +107,16 @@ body { height: 2000px; overflow-y: scroll; }
             forward: '#nBottomBtn',
             back: '#nTopBtn'
         });
-    $('#img').on('load', function(){
-        
+
+    var imgEl = $('#img')[0];
+    if(imgEl.complete){
         a.scrollTo(2000);
-    });
+
+    } else {
+        imgEl.onload = function(){
+            a.scrollTo(2000);
+        };
+    }
 }();
 </script>
 </body>
