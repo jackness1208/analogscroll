@@ -56,6 +56,7 @@ analogscroll(target, options);
 |direction|{string}|否|滚动条方向。x 或者 y。默认值为 y|
 |distance|{number}|否|鼠标滚轮每滚一下滑移动的距离。默认值为 20|
 |bubble|{bollean}|true|是否滚动冒泡，默认为 true|
+|bubbleTarget|{string/object}|window|最终禁止滚动冒泡的对象，默认为 window|
 |forward|{string/object}|否|控制滚动条向右/下 移动的按钮|
 |transition|{number}|否|滚动动画过渡时长，默认值为 500 ms|
 |back|{string/object}|否|控制滚动条向左/上 移动的按钮|

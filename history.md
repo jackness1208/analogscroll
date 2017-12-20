@@ -3,7 +3,7 @@
 * [FIX] 修复 组件 `onscroll(scrollTop, direction)` 中 `direction` 在用鼠标滚动时始终为 `0` 的问题
 * [FIX] 修复 组件 在同一个模块同时绑定横向和纵向滚动条时，ui显示会出现系统纵向滚动条 的问题
 * [EDIT] 更加精确地计算滚动条宽度 `cnt.scrollWidth - cnt.offsetWidth`
-* [ADD] 新增 参数 `bubble` 用来设置 组件滚动是否触发 滚动冒泡, 默认为 `true`
+* [ADD] 新增 参数 `bubble`, `bubbleTarget` 用来设置 组件滚动是否触发 滚动冒泡, 默认为 `true`
 
 ## 2.4.0 - 2017-12-12
 * [EDIT] 增加 `module.exports` 模式支持

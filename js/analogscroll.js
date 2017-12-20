@@ -25,6 +25,8 @@
 
             // 允许滚动冒泡
             bubble: true,
+            // 最终禁止滚动冒泡的对象，默认为 window
+            bubbleTarget: window,
 
             // 距离 底部多少像素时开始触发 onend
             endDistance: 0,
@@ -471,13 +473,13 @@
                 }
 
                 $(el.cnt).on('mouseenter', function(){
-                    scrollNum = $(window)[scrollKey]();
+                    scrollNum = $(she.op.bubbleTarget)[scrollKey]();
                 });
                 $(el.cnt).on('mouseleave', function(){
                     scrollNum = -1;
                 });
 
-                $(window).on('scroll', function(){
+                $(she.op.bubbleTarget).on('scroll', function(){
                     return scrollNum !== -1 && $(this)[scrollKey](scrollNum);
                 });
             }
@@ -660,6 +662,7 @@
         window.analogscroll = analogscroll;
     }
 })($, window, document);
+
 
 
 
