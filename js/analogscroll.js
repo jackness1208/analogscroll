@@ -234,7 +234,20 @@
                 op = she.op,
                 el = she.el,
                 setting = she.setting,
-                attrs = [];
+                targetWidth = $(el.target).width(),
+                targetHeight = $(el.target).height(),
+                attrs = [],
+                iData = $(el.cnt).data();
+
+
+            if($(el.cnt).attr('data-direction-x')){
+                targetHeight += setting.barWidth;
+            }
+
+            if($(el.cnt).attr('data-direction-y')){
+                targetWidth += setting.barWidth;
+            }
+
 
             if( op.direction == "x" ){
                 attrs = ["width","Width","left","Left", 'bottom'];
@@ -243,9 +256,12 @@
                 attrs = ["height","Height","top","Top", 'right'];
             }
 
+            $(el.cnt).css('width', targetWidth + 'px');
+            $(el.cnt).css('height', targetHeight + 'px');
+
             $(el.target).css('overflow', 'hidden');
-            $(el.cnt).css('height', $(el.target).height() + 'px');
-            $(el.cnt).css('width', $(el.target).width() + setting.barWidth + 'px');
+
+            
 
             var seOffset = el.target["offset" + attrs[1]],
                 seScroll = el.cnt["scroll" + attrs[1]],
@@ -418,6 +434,7 @@
             }
 
             // el cnt 初始化
+            $(el.cnt).attr('data-direction-' + she.op.direction, '1');
             $(el.cnt).css('position', 'relative');
             $(el.cnt).css('overflow-' + she.op.direction, 'scroll');
             $(el.cnt).on('scroll', function(){

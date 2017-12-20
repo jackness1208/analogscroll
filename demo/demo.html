@@ -6,6 +6,7 @@
 <title>模拟滚动条</title>
 <style type="text/css">
 *{margin:0; padding:0;}
+body { height: 2000px; overflow-y: scroll; }
 .area{ width:620px; margin:50px auto; padding:5px; border:1px solid #e1e1e1; -webkit-box-shadow:0 0 5px #ccc; -moz-box-shadow:0 0 5px #ccc; box-shadow:0 0 5px #ccc; zoom:1;}
 	.area:after{ content:"."; display:block; visibility:hidden; clear:both; height:0; overflow:hidden;}
 
@@ -96,6 +97,7 @@
                 }
             },
             onscroll: function(scrollTop, direction){
+                console.log('scroll', scrollTop, direction)
                 info.innerHTML = 'direction:' + direction;
             }
         }),
