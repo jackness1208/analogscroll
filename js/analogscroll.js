@@ -1,10 +1,10 @@
 'use strict';
 /**
- * Copyright 2016, jackness.org
+ * Copyright 2017, jackness.org
  * Creator: Jackness Lau
  * $Author: Jackness Lau $
- * $Date: 2016.12.07 $
- * $Version: 2.3.3 $
+ * $Date: 2017.12.20 $
+ * $Version: 2.5.0 $
  */
 // 'use strict';
 (function($, window, document, undefined){
