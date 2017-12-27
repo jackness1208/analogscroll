@@ -4,10 +4,12 @@
  * Creator: Jackness Lau
  * $Author: Jackness Lau $
  * $Date: 2017.12.20 $
- * $Version: 2.5.0 $
+ * $Version: 2.5.1 $
  */
 // 'use strict';
 (function($, window, document, undefined){
+    var IS_IE = ('ActiveXObject' in window && /(msie |Trident\/.*rv\:)(\d*)/i.test(navigator.userAgent) ? RegExp.$2 : false);
+
     var
         options = {
             // 方向 x|y
@@ -435,6 +437,9 @@
                         ].join(';');
                         document.body.appendChild(frag);
                         r = frag.offsetWidth - frag.scrollWidth;
+                        if(!r){
+                            r = 17;
+                        }
                         document.body.removeChild(frag);
                         return r;
 
@@ -460,6 +465,10 @@
             $(el.cnt).css('position', 'relative');
             $(el.cnt).css('overflow-' + she.op.direction, 'scroll');
 
+            // TODO 目前 ie 10 存在问题， bubble 在 ie 暂停使用
+            if(IS_IE){
+                she.op.bubble = true;
+            }
 
             if(!she.op.bubble){ // 阻止滚动冒泡相关逻辑
 
