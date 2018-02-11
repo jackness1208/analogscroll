@@ -1,0 +1,12 @@
+root = true
+
+#用 unix 方式结束一行
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# HTMLT CSS JavaScript 都使用 4 个空格缩进
+indent_style = space
+indent_size = 4
