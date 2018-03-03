@@ -3,7 +3,7 @@
  * Creator: Jackness Lau
  * $Author: Jackness Lau $
  * $Date: 2018.02.11 $
- * $Version: 2.5.2 $
+ * $Version: 2.5.3 $
  */
 'use strict';
 (function($, window, document, undefined) {
@@ -225,6 +225,18 @@
         return new analogscroll.fn.init(target, op);
     };
 
+    var STYLE = [
+        '.analogscroll__cnt::-webkit-scrollbar {',
+        '   width: 0;',
+        '   overflow: hidden;',
+        '   opacity: 0;',
+        '   visibility: hidden;',
+        '}'
+    ].join('\n');
+
+    var STYLE_ID = 'analogscrollStyle';
+    var CNT_CLASS = 'analogscroll__cnt';
+
     analogscroll.fn = {
         op: {},
 
@@ -426,9 +438,9 @@
                             'overflow-y: scroll'
                         ].join(';');
                         document.body.appendChild(frag);
-                        r = frag.offsetWidth - frag.scrollWidth;
+                        r = frag.offsetWidth - frag.scrollWidth + 1;
                         if (!r) {
-                            r = 17;
+                            r = 18;
                         }
                         document.body.removeChild(frag);
                         return r;
@@ -449,15 +461,22 @@
                 return;
             }
 
+            // 样式初始化
+            if (!$('#' + STYLE_ID).length) {
+                $(
+                    '<style id="{$id}" type="text/css">{$css}</style>'
+                        .replace('{$id}', STYLE_ID)
+                        .replace('{$css}', STYLE)
+                ).appendTo('head');
+            }
+
             // el cnt 初始化
             $(el.cnt).attr('data-direction-' + she.op.direction, '1');
             $(el.cnt).css('position', 'relative');
             $(el.cnt).css('overflow-' + she.op.direction, 'scroll');
+            $(el.cnt).addClass(CNT_CLASS);
 
-            // TODO 目前 ie 10 存在问题， bubble 在 ie 暂停使用
-            // if(IS_IE){
-            //     she.op.bubble = true;
-            // }
+
 
             if (!she.op.bubble) { // 阻止滚动冒泡相关逻辑
                 var deltaKey;
