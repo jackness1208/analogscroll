@@ -3,7 +3,7 @@
  * Creator: Jackness Lau
  * $Author: Jackness Lau $
  * $Date: 2018.02.11 $
- * $Version: 2.5.3 $
+ * $Version: 2.5.4 $
  */
 'use strict';
 (function($, window, document, undefined) {
@@ -146,6 +146,29 @@
                     // $(el.cnt).attr('scroll' + attrs[3], pos);
                     $(el.cnt)['scroll' + attrs[3]](pos);
                 }
+            },
+            getBarWidth: function() {
+                var
+                    frag = document.createElement('div'),
+                    r = 0;
+
+                frag.className = CNT_CLASS;
+
+                frag.style.cssText = [
+                    'position: absolute',
+                    'left: 0',
+                    'top: 0',
+                    'width: 50px',
+                    'height: 10px',
+                    'overflow-y: scroll'
+                ].join(';');
+                document.body.appendChild(frag);
+                r = frag.offsetWidth - frag.scrollWidth + 1;
+                if (!r) {
+                    r = 18;
+                }
+                document.body.removeChild(frag);
+                return r;
             },
             b2cMapping: function(ctrl) {
                 var
@@ -403,6 +426,15 @@
 
     var
         init = analogscroll.fn.init = function(target, o) {
+            // 样式初始化
+            if (!$('#' + STYLE_ID).length) {
+                $(
+                    '<style id="{$id}" type="text/css">{$css}</style>'
+                        .replace('{$id}', STYLE_ID)
+                        .replace('{$css}', STYLE)
+                ).appendTo('head');
+            }
+
             var
                 she = this,
                 op = she.op = $.fn.extend(undefined, options, o),
@@ -424,27 +456,7 @@
                     // 当前滚动方向（距离）
                     direction: 0,
 
-                    barWidth: (function() {
-                        var
-                            frag = document.createElement('div'),
-                            r = 0;
-
-                        frag.style.cssText = [
-                            'position: absolute',
-                            'left: 0',
-                            'top: 0',
-                            'width: 50px',
-                            'height: 10px',
-                            'overflow-y: scroll'
-                        ].join(';');
-                        document.body.appendChild(frag);
-                        r = frag.offsetWidth - frag.scrollWidth + 1;
-                        if (!r) {
-                            r = 18;
-                        }
-                        document.body.removeChild(frag);
-                        return r;
-                    })()
+                    barWidth: sf.getBarWidth
 
                 },
 
@@ -461,14 +473,7 @@
                 return;
             }
 
-            // 样式初始化
-            if (!$('#' + STYLE_ID).length) {
-                $(
-                    '<style id="{$id}" type="text/css">{$css}</style>'
-                        .replace('{$id}', STYLE_ID)
-                        .replace('{$css}', STYLE)
-                ).appendTo('head');
-            }
+
 
             // el cnt 初始化
             $(el.cnt).attr('data-direction-' + she.op.direction, '1');
@@ -683,6 +688,7 @@
         window.analogscroll = analogscroll;
     }
 })($, window, document);
+
 
 
 
